@@ -30,7 +30,7 @@ body{
     radial-gradient(900px 700px at 100% 100%,#3a2432 0%,transparent 60%),
     #16161c;
   display:flex;align-items:center;justify-content:center;
-  min-height:100vh;min-height:100dvh;
+  min-height:100vh;
   overflow:hidden;
 }
 button{font-family:inherit;border:none;background:none;padding:0;cursor:pointer;color:inherit}
@@ -97,7 +97,7 @@ img{display:block;max-width:100%}
 /* ============ 屏幕容器 ============ */
 .viewport{position:relative;flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
 .app-view{
-  position:absolute;inset:0;display:flex;flex-direction:column;
+  position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;
   background:var(--screen);
   animation:appIn .26s cubic-bezier(.22,.9,.3,1);
 }
@@ -121,12 +121,12 @@ img{display:block;max-width:100%}
 .scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:26px}
 
 /* =====================================================================
-   顶部安全区：为小红书内置浏览器的宿主按钮预留空间
+   顶部安全区：为红书内置浏览器的宿主按钮预留空间
    —— 关键操作一律不放顶部，这里只做避让，不挤压正文
    ===================================================================== */
 .app-view .navbar,
 .app-view .pf-header{
-  margin-top: max(4px, calc(env(safe-area-inset-top, 0px) * 0.5));
+  margin-top: calc(env(safe-area-inset-top, 0px) * 0.5);
 }
 
 /* =====================================================================
@@ -153,7 +153,7 @@ img{display:block;max-width:100%}
    底部弹出面板（APP 菜单 / 搜索面板）
    ===================================================================== */
 .sheet{
-  position:absolute;inset:0;z-index:880;
+  position:absolute;top:0;right:0;bottom:0;left:0;z-index:880;
   background:rgba(10,10,18,.42);
   display:flex;align-items:flex-end;
   animation:sheetIn .2s ease-out;
@@ -189,10 +189,22 @@ img{display:block;max-width:100%}
 .ctx-item:active{background:#f2f2f6}
 .ctx-item.cancel{color:#9a9aa6;font-weight:500;border-top:1px solid #f2f2f6}
 
-/* 可复制文本 */
+/* 可复制文本
+   【minitool】容器禁用 navigator.clipboard / execCommand，
+   复制改为"长按选中"：这类文本必须允许 user-select，否则玩家无法选中。 */
 .copyable{
   color:#2f6fd0;font-weight:700;text-decoration:underline;
   text-decoration-style:dotted;text-underline-offset:3px;
+  -webkit-user-select:text;user-select:text;
+}
+/* 长按复制提示弹窗里的编号：可选中、字号放大、等宽，方便长按选中 */
+.lp-text{
+  margin-top:12px;padding:12px 14px;border-radius:12px;
+  background:#f5f5fa;border:1px solid #e8e8f0;
+  font-size:19px;font-weight:700;letter-spacing:1px;color:#1d1d24;
+  text-align:center;word-break:break-all;
+  -webkit-user-select:text;user-select:text;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 
 /* 搜索面板 */
@@ -259,8 +271,31 @@ img{display:block;max-width:100%}
   display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;
 }
 .sr-main{flex:1;min-width:0}
-.sr-t{font-size:14.4px;font-weight:600;color:#22222a;line-height:1.4}
+.sr-t{font-size:14.4px;font-weight:600;color:#22222a;line-height:1.4;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .sr-s{font-size:11.8px;color:#9a9aa6;margin-top:4px;line-height:1.5}
+.sr-time{font-size:11px;color:#b8b8c2;margin-top:3px}
+.sr-type{
+  font-size:10.5px;font-weight:700;line-height:1;padding:3px 7px;border-radius:7px;
+  flex:0 0 auto;letter-spacing:.3px;
+}
+.sr-type-user{background:#eef0fb;color:#5b6ee1}
+.sr-type-post{background:#eaf6ec;color:#4f9a63}
+.sr-type-topic{background:#fdf3e4;color:#c98a3e}
+.sr-like-in{
+  margin-left:8px;font-size:11.6px;color:#9aa0b0;font-weight:500;border-left:1px solid #ececf2;padding-left:8px;
+}
+/* 已发现账号：微浪首页返回卡片 */
+.gwb-entry{
+  display:flex;align-items:center;gap:11px;margin:10px 12px;padding:12px 14px;
+  background:#fff;border:1px solid #ececf2;border-radius:13px;cursor:pointer;
+  box-shadow:0 4px 14px rgba(20,20,35,.05);
+}
+.gwb-entry:active{background:#f7f7fa}
+.gwb-entry-m{flex:1;min-width:0}
+.gwb-entry-t{font-size:14.4px;font-weight:700;color:#22222a;display:flex;align-items:center;gap:8px}
+.gwb-entry-tag{font-size:10.5px;font-weight:700;color:#c0396b;background:#fdeef5;padding:2px 7px;border-radius:7px}
+.gwb-entry-s{font-size:11.8px;color:#9a9aa6;margin-top:3px}
+.gwb-entry-go{font-size:20px;color:#c8c8d2}
 .sr-tag{
   font-size:10.6px;font-weight:700;color:#c0396b;background:#fff0f5;
   padding:3px 7px;border-radius:8px;flex:0 0 auto;
@@ -268,7 +303,7 @@ img{display:block;max-width:100%}
 .sr-none{padding:44px 20px;text-align:center;color:#b0b0bc;font-size:13.4px}
 
 /* =====================================================================
-   微信新消息：顶部下拉横幅通知
+   微讯新消息：顶部下拉横幅通知
    ===================================================================== */
 .notif{
   position:absolute;left:10px;right:10px;top:0;z-index:900;
@@ -280,7 +315,7 @@ img{display:block;max-width:100%}
   transition:transform .38s cubic-bezier(.2,.9,.3,1);
   border:1px solid rgba(0,0,0,.05);
 }
-.notif.in{ transform:translateY(calc(max(8px, env(safe-area-inset-top, 0px)) + 6px)); }
+.notif.in{ transform:translateY(calc(env(safe-area-inset-top, 0px) + 8px)); }
 .notif .nf-av{width:38px;height:38px;border-radius:9px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#5fd68f,#33a866);color:#fff;font-weight:700;font-size:17px}
 .notif .nf-main{flex:1;min-width:0}
 .notif .nf-t{font-size:13px;font-weight:700;color:#1d1d24;display:flex;align-items:center;gap:6px}
@@ -291,14 +326,14 @@ img{display:block;max-width:100%}
 
 /* ============ 桌面 ============ */
 .desktop{
-  position:absolute;inset:0;display:flex;flex-direction:column;
+  position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;
   background:
     radial-gradient(1000px 620px at 12% 4%,#5c4b7d 0%,transparent 58%),
     radial-gradient(900px 700px at 108% 12%,#8e4a63 0%,transparent 55%),
     radial-gradient(760px 620px at 50% 108%,#2c4a63 0%,transparent 60%),
     linear-gradient(170deg,#191a26 0%,#101018 55%,#0b0b11 100%);
   color:#fff;
-  padding:calc(4px + max(6px, env(safe-area-inset-top, 0px))) 24px calc(26px + env(safe-area-inset-bottom, 0px));
+  padding:calc(10px + env(safe-area-inset-top, 0px)) 24px calc(26px + env(safe-area-inset-bottom, 0px));
 }
 .desk-clock{padding:16px 4px 2px}
 .desk-clock .big{font-size:56px;font-weight:250;letter-spacing:-2px;line-height:1;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.35)}
@@ -323,12 +358,23 @@ img{display:block;max-width:100%}
   max-width:66px;text-align:center;
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
+/* 【v5.3】红点修复：
+   红点必须挂在 .appicon（position:relative）上，不能放进 .ico——
+   .ico 设了 overflow:hidden，会把 top/right 为负的红点整块裁掉，
+   这正是之前"红点没做出来"的原因。
+   位置按 .ico 尺寸（58px / Dock 52px）手动对齐右上角。 */
 .appicon .badge{
-  position:absolute;top:-4px;right:-4px;min-width:19px;height:19px;border-radius:10px;background:#fa3b4c;
+  position:absolute;z-index:9;background:#fa3b4c;
+  min-width:19px;height:19px;border-radius:10px;
   color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;
-  padding:0 5px;box-shadow:0 0 0 2px rgba(20,20,28,.9);z-index:3;
+  padding:0 5px;box-shadow:0 0 0 2.5px rgba(18,18,26,.95),0 2px 6px rgba(0,0,0,.4);
+  pointer-events:none;
 }
-.appicon .badge.plain{min-width:10px;height:10px;padding:0}
+/* 网格图标（58px）右上角 */
+.desk-grid .appicon > .badge{top:2px;right:8px}
+.appicon .badge.plain{min-width:12px;height:12px;padding:0}
+/* Dock 图标（52px）右上角 */
+.dock .appicon > .badge{top:10px;right:16px}
 .appicon.locked{pointer-events:auto}
 .appicon.locked .ico{filter:grayscale(.85) brightness(.5);pointer-events:none}
 .appicon.locked .ico::after{
@@ -338,7 +384,7 @@ img{display:block;max-width:100%}
 /* Dock：与网格严格区分（更大圆角、含文字标签），占据底部固定一栏 */
 .dock{
   margin-top:auto;display:flex;gap:16px;justify-content:center;align-items:flex-start;
-  background:rgba(255,255,255,.11);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  background:rgba(255,255,255,.11);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);
   border-radius:26px;padding:12px 18px 10px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.11);
 }
 /* 图标群与 Dock 之间加一段弹性留白。留白有上限，超出部分由"记录条"吸收 */
@@ -368,7 +414,7 @@ img{display:block;max-width:100%}
 /* ============ 提示 / 任务条 ============ */
 .taskbar{
   position:absolute;left:12px;right:12px;bottom:12px;z-index:700;
-  background:rgba(28,28,36,.93);backdrop-filter:blur(14px);
+  background:rgba(28,28,36,.93);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
   color:#fff;border-radius:14px;padding:11px 14px;font-size:12.8px;line-height:1.5;
   display:flex;gap:9px;align-items:flex-start;
   box-shadow:0 10px 26px rgba(0,0,0,.34);
@@ -382,8 +428,8 @@ img{display:block;max-width:100%}
 
 /* 通用弹窗 */
 .modal{
-  position:absolute;inset:0;z-index:880;display:flex;align-items:center;justify-content:center;padding:26px;
-  background:rgba(10,10,16,.5);backdrop-filter:blur(5px);
+  position:absolute;top:0;right:0;bottom:0;left:0;z-index:880;display:flex;align-items:center;justify-content:center;padding:26px;
+  background:rgba(10,10,16,.5);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
   animation:fade .2s ease;
 }
 @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -396,6 +442,14 @@ img{display:block;max-width:100%}
 .modal .box h3{margin:0 0 10px;font-size:17px;font-weight:700;text-align:center}
 .modal .box .body{font-size:13.6px;line-height:1.72;color:#4a4a53}
 .modal .box .body .em{color:var(--accent);font-weight:700}
+/* 剧情弹窗：内心独白 + 流程提示 */
+.modal.story .box{max-width:318px;padding:20px 18px 16px}
+.modal.story .box h3{font-size:15px;color:#8b8b96;font-weight:600;letter-spacing:1px}
+.st-think{display:flex;gap:10px;align-items:flex-start}
+.st-av{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:#f1eef7;color:#8b7fb0;font-size:12.6px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.st-tx{flex:1;font-size:13.8px;line-height:1.82;color:#33333c}
+.st-hint{display:flex;gap:8px;align-items:flex-start;margin-top:14px;padding:11px 12px;background:#fdf2f7;border-radius:11px;font-size:12.8px;line-height:1.7;color:#b8437a}
+.st-hint .st-hi{flex:0 0 auto;font-weight:700;color:#e8437a}
 .modal .acts{margin-top:16px;display:flex;flex-direction:column;gap:8px}
 .btn{
   width:100%;height:46px;border-radius:12px;font-size:15px;font-weight:600;
@@ -448,7 +502,7 @@ img{display:block;max-width:100%}
 /* 给搜索框右侧留出「回首页」的位置 */
 .pf-header > .pf-row1{padding-right:78px}
 .pf-header > .pf-row1 .pf-search{margin-right:0;min-width:0}
-/* navbar 里的样式（微信等） */
+/* navbar 里的样式（微讯等） */
 .navbar .home-key{margin-right:2px;position:static}
 .avatar{border-radius:50%;flex:0 0 auto;object-fit:cover;background:#dcdce4;display:block}
 .avatar.clickable{box-shadow:0 0 0 2px #fff,0 0 0 3.6px rgba(232,67,122,.28)}
@@ -464,14 +518,16 @@ img{display:block;max-width:100%}
 .p-imgs.g1{grid-template-columns:1fr}
 .p-imgs.g2{grid-template-columns:1fr 1fr}
 .p-imgs.g3{grid-template-columns:repeat(3,1fr)}
-.p-img{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:#e9e9ee}
-.p-img.wide{aspect-ratio:4/3}
+/* 【minitool】aspect-ratio 晚于 Chrome 61，用 padding-top 比例盒兜底 */
+.p-img{position:relative;width:100%;height:0;padding-top:100%;overflow:hidden;background:#e9e9ee}
+.p-img > *{position:absolute;top:0;right:0;bottom:0;left:0}
+.p-img.wide{padding-top:75%}
 .p-img .saveflag{position:absolute;right:6px;bottom:6px;font-size:10.5px;background:rgba(0,0,0,.55);color:#fff;padding:2px 7px;border-radius:9px}
 .p-img .saveflag.done{background:rgba(22,163,74,.86)}
 .p-bar{display:flex;gap:26px;margin-top:9px;color:#9a9aa6;font-size:12.4px}
 .p-bar span{display:flex;align-items:center;gap:4px}
 .p-bar span:active{color:var(--accent)}
-/* 微博评论：粉丝生态 */
+/* 微浪评论：粉丝生态 */
 .p-cms{
   margin-top:9px;background:#f7f7fa;border-radius:10px;padding:9px 11px;
   font-size:12.4px;line-height:1.72;color:#5a5a64;
@@ -480,7 +536,7 @@ img{display:block;max-width:100%}
 .p-cms .c:last-child{margin-bottom:0}
 .p-cms .c b{color:#3c7fd4;font-weight:600}
 .p-cms .byidol b{color:#c0396b}
-/* 「查看更早微博」折叠条 */
+/* 「查看更早微浪」折叠条 */
 .older-bar{
   display:flex;align-items:center;justify-content:center;gap:6px;
   padding:14px;background:#fff;color:#8b8b96;font-size:13px;
@@ -509,16 +565,16 @@ img{display:block;max-width:100%}
 .rev-h{font-weight:700;margin-bottom:5px;color:#c07a1e}
 .rv-b{color:#6b5a3a;margin-top:3px}
 .rv-b b{color:#a3671c}
-/* 女性微博小号：已读 / 提示条 */
+/* 女性微浪小号：已读 / 提示条 */
 .post.read{background:#fcfcfe}
 .gwb-tip{
   margin-top:9px;background:#f7f7fa;border-radius:10px;padding:10px 12px;
   font-size:12.4px;color:#5a5a64;line-height:1.65;
 }
-/* 加载更早微博 */
+/* 加载更早微浪 */
 .older-bar.pulse{animation:pulseBar .4s ease}
 @keyframes pulseBar{0%{background:#f0f0f4}50%{background:#ffe9d6}100%{background:#f0f0f4}}
-/* 微博搜索框就绪态 */
+/* 微浪搜索框就绪态 */
 .pf-search.ready{background:#fff6e6;border:1px solid #f7dfb0;color:#a3671c;font-weight:600}
 .pf-search.typed{background:#f2f2f5}
 /* 音乐首页 logo */
@@ -534,7 +590,7 @@ img{display:block;max-width:100%}
 /* 已消失的账号楼层 */
 .floor.gone{opacity:.62}
 
-/* ============ 微博 ============ */
+/* ============ 微浪 ============ */
 .wb-top{background:#fff;padding:6px 12px 8px}
 .wb-tabs{display:flex;gap:18px;font-size:14.5px;color:#8b8b96;padding:2px 2px}
 .wb-tabs b{color:#1d1d24;font-size:15.5px;position:relative}
@@ -553,7 +609,7 @@ img{display:block;max-width:100%}
 .wb-ph-actions .b.sec{background:#f2f2f6;color:#4a4a53}
 .wb-ph-actions .b.pri.followed{background:#f2f2f6;color:#8b8b96}
 
-/* 微信用 */
+/* 微讯用 */
 .wx-chat{background:#ebebf0;flex:1;min-height:0;overflow-y:auto;padding:14px 12px 8px;display:flex;flex-direction:column;gap:14px}
 .wx-day{text-align:center;font-size:11.4px;color:#a3a3af;margin:2px 0}
 .msg{display:flex;gap:8px;max-width:100%}
@@ -577,20 +633,30 @@ img{display:block;max-width:100%}
 .bbs-tabs{display:flex;gap:14px;font-size:13.4px;color:#8b8b96;padding:8px 13px 2px;background:#fff;border-bottom:1px solid var(--line);overflow-x:auto}
 .bbs-tabs span{white-space:nowrap;padding-bottom:8px}
 .bbs-tabs span.on{color:#2b6cb0;font-weight:700;border-bottom:2px solid #2b6cb0}
-.thread{display:flex;gap:10px;padding:12px 13px;background:#fff;border-bottom:1px solid #f2f2f5;align-items:flex-start}
+.thread{display:flex;gap:10px;padding:13px 13px 12px;background:#fff;border-bottom:1px solid #f2f2f5;align-items:flex-start}
 .thread .t-main{flex:1;min-width:0}
-.thread .t-title{font-size:14.6px;font-weight:600;line-height:1.45;color:#1e1e26}
+/* 字号层级：标题最醒目 → 正文摘要 → 元信息最小最浅，避免日期/发帖人抢过标题 */
+.thread .t-title{font-size:15.4px;font-weight:600;line-height:1.5;color:#1a1a22}
 .thread .t-title.hot{color:#c53030}
-.thread .t-meta{font-size:11.4px;color:#a3a3af;margin-top:6px;display:flex;gap:10px;flex-wrap:wrap}
-.thread .t-rep{flex:0 0 auto;font-size:11px;color:#fff;background:#c3c3cc;border-radius:9px;padding:3px 8px;font-weight:600}
+.thread .t-body{font-size:13px;color:#7a7a86;margin-top:5px;line-height:1.6}
+.thread .t-meta{font-size:10.8px;color:#b0b0bc;margin-top:7px;display:flex;gap:9px;flex-wrap:wrap}
+.thread .t-rep{flex:0 0 auto;font-size:10.5px;color:#fff;background:#c3c3cc;border-radius:9px;padding:3px 8px;font-weight:600}
 .thread .t-rep.hot{background:#e05252}
 .floor{display:flex;gap:10px;padding:13px 14px;border-bottom:1px solid #f2f2f5;background:#fff}
 .floor .f-main{flex:1;min-width:0}
-.floor .f-top{display:flex;align-items:center;gap:7px;font-size:12.8px;color:#8b8b96}
-.floor .f-top .nm{font-weight:600;color:#3c3c46;font-size:13.2px}
-.floor .f-top .lv{font-size:10px;background:#eef2f8;color:#5a7fb0;padding:1px 5px;border-radius:3px}
-.floor .f-text{font-size:14.3px;line-height:1.6;margin-top:6px;color:#22222a}
-.floor .f-foot{font-size:11.4px;color:#a8a8b4;margin-top:7px;display:flex;gap:14px}
+.floor .f-top{display:flex;align-items:center;gap:7px;font-size:11.4px;color:#a8a8b4}
+.floor .f-top .nm{font-weight:700;color:#33333c;font-size:13.4px}
+.floor .f-top .lv{font-size:9.6px;background:#eef2f8;color:#5a7fb0;padding:1px 5px;border-radius:3px}
+.floor .f-text{font-size:14.2px;line-height:1.62;margin-top:6px;color:#22222a}
+.floor .f-foot{font-size:11.2px;color:#b0b0bc;margin-top:7px;display:flex;gap:14px}
+/* 帖子详情页：标题最大最粗，元信息（楼主/日期/浏览/回复）明显缩小变浅 */
+.th-head{background:#fff;padding:15px 15px 14px;border-bottom:1px solid var(--line)}
+.th-title{font-size:17.6px;font-weight:800;line-height:1.45;color:#16161c;letter-spacing:.1px}
+.th-title.hot{color:#c53030}
+.th-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:9px;font-size:11px;color:#b3b3bf;line-height:1.4}
+.th-meta span{display:inline-flex;align-items:center;gap:3px}
+.th-meta b{font-weight:500;color:#9a9aa6}
+.th-body{margin-top:12px;font-size:14.4px;line-height:1.72;color:#33333c}
 .floor.op{background:#fafbfd}
 .floor .quote{background:#f5f6f9;border-left:3px solid #d5d8e0;padding:7px 10px;border-radius:5px;font-size:12.8px;color:#6b6b76;margin-top:8px;line-height:1.55}
 
@@ -622,10 +688,18 @@ img{display:block;max-width:100%}
 .heardbox .hb-txt b{font-size:14.4px;display:block;color:#1d1d24}
 .heardbox .hb-txt i{font-size:11.8px;color:#9a9aa6;font-style:normal;display:block;margin-top:4px;line-height:1.5}
 .mu-list-title{font-size:13.4px;font-weight:700;color:#1d1d24;padding:14px 16px 7px;background:#fff}
+/* 情侣绑定卡片：音乐平台的身份暗示，只陈述平台侧状态，不给结论 */
+.couple-box{background:linear-gradient(150deg,#fdf4f8,#f7f4fd);border:1px solid #f2e6ef;border-radius:14px;margin:12px 14px 0;padding:12px 14px}
+.couple-box .cp-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.couple-box .cp-mode{font-size:12.6px;font-weight:700;color:#c0396b;background:#fff;border:1px solid #f6d8e6;border-radius:20px;padding:4px 10px;line-height:1}
+.couple-box .cp-days{font-size:11.6px;color:#9a7f8e}
+.couple-box .cp-row{display:flex;gap:10px;font-size:12.2px;margin-top:9px;line-height:1.5;align-items:baseline}
+.couple-box .cp-lb{flex:0 0 auto;color:#a8969e;font-size:11.6px}
+.couple-box .cp-vl{color:#3a3a44}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{width:15px;height:15px;border:2px solid rgba(0,0,0,.13);border-top-color:#e8437a;border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 
-/* 小红书 */
+/* 红书 */
 .xhs-head{background:#fff;border-bottom:1px solid var(--line);padding:9px 12px;display:flex;align-items:center;gap:9px}
 .xhs-badge{font-size:14.6px;font-weight:800;color:#ff2442;letter-spacing:.4px}
 .xhs-search{flex:1;height:33px;border-radius:16.5px;background:#f5f5f8;display:flex;align-items:center;gap:7px;padding:0 12px;font-size:13px;color:#9a9aa6}
@@ -643,13 +717,14 @@ img{display:block;max-width:100%}
 .xhs-posts{padding:9px;display:grid;grid-template-columns:1fr 1fr;gap:7px;background:#fff}
 
 /* 图片查看器 */
-.viewer{position:absolute;inset:0;z-index:890;background:#08080c;display:flex;flex-direction:column;animation:fade .2s}
-.viewer .v-top{flex:0 0 auto;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;color:#fff}
+.viewer{position:absolute;top:0;right:0;bottom:0;left:0;z-index:890;background:#08080c;display:flex;flex-direction:column;animation:fade .2s}
+/* 顶部整体下移，避开手机灵动岛与红书内置浏览器顶部覆盖区 */
+.viewer .v-top{flex:0 0 auto;min-height:72px;display:flex;align-items:center;justify-content:space-between;padding:calc(46px + env(safe-area-inset-top, 0px)) 14px 0;color:#fff}
 .viewer .v-close{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:17px}
-.viewer .v-count{font-size:13px;opacity:.8}
+.viewer .v-count{font-size:13.6px;opacity:.9;font-weight:700;text-align:center;flex:1;padding:0 8px;line-height:1.35}
 .viewer .v-body{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px}
 .viewer .v-body .frame{width:100%;border-radius:14px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.6)}
-.viewer .v-foot{flex:0 0 auto;padding:14px 18px 22px;display:flex;flex-direction:column;gap:10px}
+.viewer .v-foot{flex:0 0 auto;padding:14px 18px calc(22px + env(safe-area-inset-bottom, 0px));display:flex;flex-direction:column;gap:10px}
 .viewer .v-cap{font-size:12.6px;color:#a9a9b6;line-height:1.6}
 .viewer .v-cap b{color:#fff;display:block;font-size:13.6px;margin-bottom:4px}
 
@@ -662,7 +737,9 @@ img{display:block;max-width:100%}
 .ig-bio{font-size:13px;color:#33333c;line-height:1.6;margin-top:11px}
 .ig-bio .em{color:#3b78c3}
 .ig-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:0 1px 8px;background:#fff}
-.ig-cell{position:relative;aspect-ratio:1/1;overflow:hidden;background:#eaeaef}
+/* 【minitool】padding-top 比例盒兜底 */
+.ig-cell{position:relative;height:0;padding-top:100%;overflow:hidden;background:#eaeaef}
+.ig-cell > *{position:absolute;top:0;right:0;bottom:0;left:0}
 .ig-cell .d{position:absolute;left:4px;bottom:4px;font-size:9.4px;color:#fff;background:rgba(0,0,0,.5);padding:1px 5px;border-radius:5px}
 .ig-cell .hit{position:absolute;top:4px;right:4px;font-size:9.6px;background:rgba(232,67,122,.94);color:#fff;padding:1px 6px;border-radius:6px;font-weight:600}
 
@@ -692,6 +769,8 @@ img{display:block;max-width:100%}
 .editor-stage .layer{position:absolute;transform-origin:center center;will-change:transform}
 .editor-stage .layer img{width:100%;height:100%;pointer-events:none;display:block}
 .editor-stage .layer.sel{outline:2px dashed #ffd66b;outline-offset:-2px}
+.editor-stage .layer-ph{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);outline:2px dashed rgba(255,255,255,.28);outline-offset:-3px;border-radius:8px}
+.editor-stage .layer-ph-t{color:#cfcfe0;font-size:13px;font-weight:600;text-align:center;line-height:1.6}
 .editor-bar{flex:0 0 auto;background:#fff;border-top:1px solid var(--line);padding:11px 13px 14px}
 .editor-tools{display:flex;gap:8px;margin-bottom:11px;flex-wrap:wrap}
 .tool{flex:1;height:38px;border-radius:10px;background:#f3f3f7;font-size:12.4px;font-weight:600;color:#4a4a53;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
@@ -736,12 +815,13 @@ img{display:block;max-width:100%}
 .sect-label{font-size:12.6px;color:#8b8b96;padding:13px 15px 7px;font-weight:600;background:#f5f5f7}
 .divider{height:8px;background:#f2f2f5}
 .notice{background:#fffbe9;border:1px solid #f5e6b8;border-radius:11px;padding:11px 13px;font-size:12.8px;line-height:1.62;color:#8a6a1e;margin:12px 13px;display:flex;gap:8px}
+.notice.ok{background:#f0fdf4;border-color:#cdebd6;color:#1e7d4c}
 .notice .ni{flex:0 0 auto}
 .pill{display:inline-block;font-size:11px;background:#fdeef5;color:#c0396b;padding:3px 9px;border-radius:9px;font-weight:600}
 
 /* ============ 启动页 ============ */
 .splash{
-  position:absolute;inset:0;display:flex;flex-direction:column;
+  position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;
   background:
     radial-gradient(760px 620px at 22% 8%,#5a476e 0%,transparent 60%),
     radial-gradient(700px 560px at 92% 22%,#8a3f5c 0%,transparent 58%),
@@ -811,18 +891,17 @@ img{display:block;max-width:100%}
   .splash .sp-intro p{margin-bottom:9px}
   .splash .sp-foot{padding-bottom:20px}
 }
-/* 底部渐隐，暗示下方还有内容可滑 */
-.splash::after{
-  content:'';position:sticky;bottom:0;left:0;right:0;height:26px;flex:0 0 auto;
-  margin-top:-26px;pointer-events:none;
-  background:linear-gradient(180deg,rgba(11,11,17,0),rgba(11,11,17,.86));
-}
+/* 【v5.3】删除启动页底部渐隐条：
+   原来这条 ::after 用 sticky + margin-top:-26px 贴在内容流末尾，
+   在当前机型上会被当成背景的一部分渲染出来，形成一条横贯屏幕的
+   "渐变分界线"（见反馈截图）。启动页背景本身就是满屏 radial-gradient，
+   不需要额外的底部渐隐，直接去掉。 */
 
 /* ============ 「?」分级提示 ============ */
 .hintbtn{
   position:absolute;right:12px;bottom:64px;z-index:760;
   width:34px;height:34px;border-radius:50%;
-  background:rgba(28,28,36,.72);backdrop-filter:blur(10px);
+  background:rgba(28,28,36,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   color:#fff;font-size:15px;font-weight:700;
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 4px 14px rgba(0,0,0,.3),inset 0 0 0 1px rgba(255,255,255,.14);
@@ -833,19 +912,20 @@ img{display:block;max-width:100%}
 .settingbtn{
   position:absolute;right:12px;bottom:106px;z-index:760;
   width:34px;height:34px;border-radius:50%;
-  background:rgba(28,28,36,.62);backdrop-filter:blur(10px);
+  background:rgba(28,28,36,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   color:#fff;font-size:14px;line-height:1;
   display:flex;align-items:center;justify-content:center;
   box-shadow:0 4px 14px rgba(0,0,0,.26),inset 0 0 0 1px rgba(255,255,255,.12);
   transition:transform .15s;
 }
 .settingbtn:active{transform:scale(.9)}
-/* 桌面端把两个悬浮按钮上移，避免压住 dock（dock 现含文字标签，约 100px+） */
-body:has(.desktop) .settingbtn{bottom:calc(178px + env(safe-area-inset-bottom, 0px))}
-body:has(.desktop) .hintbtn{bottom:calc(136px + env(safe-area-inset-bottom, 0px))}
+/* 桌面端把两个悬浮按钮上移，避免压住 dock（dock 现含文字标签，约 100px+）
+   【minitool】:has() 晚于 Chrome 61，改为由 JS 在 body 上切换 .on-desktop */
+body.on-desktop .settingbtn{bottom:calc(178px + env(safe-area-inset-bottom, 0px))}
+body.on-desktop .hintbtn{bottom:calc(136px + env(safe-area-inset-bottom, 0px))}
 .hintpop{
   position:absolute;left:12px;right:12px;bottom:12px;z-index:770;
-  background:rgba(28,28,36,.95);backdrop-filter:blur(14px);
+  background:rgba(28,28,36,.95);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
   color:#fff;border-radius:14px;padding:13px 15px;font-size:13px;line-height:1.62;
   box-shadow:0 12px 30px rgba(0,0,0,.4);
   animation:toastIn .28s cubic-bezier(.2,1.1,.3,1);
@@ -864,12 +944,165 @@ body:has(.desktop) .hintbtn{bottom:calc(136px + env(safe-area-inset-bottom, 0px)
 @media (max-width:430px){
   body{background:#0d0d12;align-items:stretch}
   #stage{width:100%}
-  .phone{width:100vw;height:100vh;height:100dvh;border-radius:0;padding:0;box-shadow:none}
+  .phone{width:100vw;height:100vh;border-radius:0;padding:0;box-shadow:none}
   .screen{border-radius:0}
   .dynamic-island{top:6px}
   .home-indicator{bottom:5px}
   .phone::before,.phone::after{display:none}
 }
+
+/* =====================================================================
+   【minitool】Flex gap 兜底（Chrome 61 不支持 flex 的 gap 简写）
+   现代内核：@supports 成立 → 直接用上面的 gap，本段整段跳过
+   Chrome 61：@supports 不成立 → 用子项 margin 还原间距
+   ===================================================================== */
+@supports not (gap: 1px){
+  .sb-right > *{margin:0 5px 0 0}
+  .sb-right > *:last-child{margin-right:0}
+  .hp-bar > *{margin:0 1.6px 0 0}
+  .hp-bar > *:last-child{margin-right:0}
+  /* 通用导航栏 */ .navbar > *{margin:0 8px 0 0}
+  /* 通用导航栏 */ .navbar > *:last-child{margin-right:0}
+  /* ===================================================================== 底部三级导航：返回上一级 / 返回桌面 / 当前 APP 菜单 ===================================================================== */ .botnav > *{margin:0 2px 0 0}
+  /* ===================================================================== 底部三级导航：返回上一级 / 返回桌面 / 当前 APP 菜单 ===================================================================== */ .botnav > *:last-child{margin-right:0}
+  .bn-item > *{margin:0 2px 0 0}
+  .bn-item > *:last-child{margin-right:0}
+  .sp-input > *{margin:0 8px 0 0}
+  .sp-input > *:last-child{margin-right:0}
+  .sp-clip > *{margin:0 10px 0 0}
+  .sp-clip > *:last-child{margin-right:0}
+  .sp-hist > *{margin:0 7px 0 0}
+  .sp-hist > *:last-child{margin-right:0}
+  .sr-like > *{margin:0 16px 0 0}
+  .sr-like > *:last-child{margin-right:0}
+  .sr-item > *{margin:0 11px 0 0}
+  .sr-item > *:last-child{margin-right:0}
+  .sr-t > *{margin:0 7px 0 0}
+  .sr-t > *:last-child{margin-right:0}
+  /* 已发现账号：微浪首页返回卡片 */ .gwb-entry > *{margin:0 11px 0 0}
+  /* 已发现账号：微浪首页返回卡片 */ .gwb-entry > *:last-child{margin-right:0}
+  .gwb-entry-t > *{margin:0 8px 0 0}
+  .gwb-entry-t > *:last-child{margin-right:0}
+  /* ===================================================================== 微讯新消息：顶部下拉横幅通知 ===================================================================== */ .notif > *{margin:0 10px 0 0}
+  /* ===================================================================== 微讯新消息：顶部下拉横幅通知 ===================================================================== */ .notif > *:last-child{margin-right:0}
+  .notif .nf-t > *{margin:0 6px 0 0}
+  .notif .nf-t > *:last-child{margin-right:0}
+  .appicon > *{margin:0 8px 0 0}
+  .appicon > *:last-child{margin-right:0}
+  /* Dock：与网格严格区分（更大圆角、含文字标签），占据底部固定一栏 */ .dock > *{margin:0 16px 0 0}
+  /* Dock：与网格严格区分（更大圆角、含文字标签），占据底部固定一栏 */ .dock > *:last-child{margin-right:0}
+  /* ============ 提示 / 任务条 ============ */ .taskbar > *{margin:0 9px 0 0}
+  /* ============ 提示 / 任务条 ============ */ .taskbar > *:last-child{margin-right:0}
+  .st-think > *{margin:0 10px 0 0}
+  .st-think > *:last-child{margin-right:0}
+  .st-hint > *{margin:0 8px 0 0}
+  .st-hint > *:last-child{margin-right:0}
+  .modal .acts > *{margin:0 8px 0 0}
+  .modal .acts > *:last-child{margin-right:0}
+  .btn > *{margin:0 6px 0 0}
+  .btn > *:last-child{margin-right:0}
+  .pf-row1 > *{margin:0 9px 0 0}
+  .pf-row1 > *:last-child{margin-right:0}
+  .pf-search > *{margin:0 7px 0 0}
+  .pf-search > *:last-child{margin-right:0}
+  /* ============ 「回首页」退出键：所有 APP 一级页可见 ============ */ .home-key > *{margin:0 4px 0 0}
+  /* ============ 「回首页」退出键：所有 APP 一级页可见 ============ */ .home-key > *:last-child{margin-right:0}
+  .post > *{margin:0 10px 0 0}
+  .post > *:last-child{margin-right:0}
+  .p-name > *{margin:0 5px 0 0}
+  .p-name > *:last-child{margin-right:0}
+  .p-time > *{margin:0 6px 0 0}
+  .p-time > *:last-child{margin-right:0}
+  .p-bar > *{margin:0 26px 0 0}
+  .p-bar > *:last-child{margin-right:0}
+  .p-bar span > *{margin:0 4px 0 0}
+  .p-bar span > *:last-child{margin-right:0}
+  /* 「查看更早微浪」折叠条 */ .older-bar > *{margin:0 6px 0 0}
+  /* 「查看更早微浪」折叠条 */ .older-bar > *:last-child{margin-right:0}
+  .wb-tabs > *{margin:0 18px 0 0}
+  .wb-tabs > *:last-child{margin-right:0}
+  .wb-ph-top > *{margin:0 12px 0 0}
+  .wb-ph-top > *:last-child{margin-right:0}
+  .wb-ph-name > *{margin:0 6px 0 0}
+  .wb-ph-name > *:last-child{margin-right:0}
+  .wb-ph-meta > *{margin:0 14px 0 0}
+  .wb-ph-meta > *:last-child{margin-right:0}
+  .wb-stats > *{margin:0 20px 0 0}
+  .wb-stats > *:last-child{margin-right:0}
+  .wb-ph-actions > *{margin:0 9px 0 0}
+  .wb-ph-actions > *:last-child{margin-right:0}
+  /* 微讯用 */ .wx-chat > *{margin:0 14px 0 0}
+  /* 微讯用 */ .wx-chat > *:last-child{margin-right:0}
+  .msg > *{margin:0 8px 0 0}
+  .msg > *:last-child{margin-right:0}
+  .wx-reply > *{margin:0 8px 0 0}
+  .wx-reply > *:last-child{margin-right:0}
+  .bbs-tabs > *{margin:0 14px 0 0}
+  .bbs-tabs > *:last-child{margin-right:0}
+  .thread > *{margin:0 10px 0 0}
+  .thread > *:last-child{margin-right:0}
+  .thread .t-meta > *{margin:0 9px 0 0}
+  .thread .t-meta > *:last-child{margin-right:0}
+  .floor > *{margin:0 10px 0 0}
+  .floor > *:last-child{margin-right:0}
+  .floor .f-top > *{margin:0 7px 0 0}
+  .floor .f-top > *:last-child{margin-right:0}
+  .floor .f-foot > *{margin:0 14px 0 0}
+  .floor .f-foot > *:last-child{margin-right:0}
+  .th-meta > *{margin:0 10px 0 0}
+  .th-meta > *:last-child{margin-right:0}
+  .th-meta span > *{margin:0 3px 0 0}
+  .th-meta span > *:last-child{margin-right:0}
+  .mu-searchbar > *{margin:0 9px 0 0}
+  .mu-searchbar > *:last-child{margin-right:0}
+  .mu-song > *{margin:0 11px 0 0}
+  .mu-song > *:last-child{margin-right:0}
+  .mu-p-head > *{margin:0 13px 0 0}
+  .mu-p-head > *:last-child{margin-right:0}
+  .mu-chips > *{margin:0 7px 0 0}
+  .mu-chips > *:last-child{margin-right:0}
+  .chip > *{margin:0 5px 0 0}
+  .chip > *:last-child{margin-right:0}
+  .heardbox > *{margin:0 12px 0 0}
+  .heardbox > *:last-child{margin-right:0}
+  .couple-box .cp-top > *{margin:0 8px 0 0}
+  .couple-box .cp-top > *:last-child{margin-right:0}
+  .couple-box .cp-row > *{margin:0 10px 0 0}
+  .couple-box .cp-row > *:last-child{margin-right:0}
+  /* 红书 */ .xhs-head > *{margin:0 9px 0 0}
+  /* 红书 */ .xhs-head > *:last-child{margin-right:0}
+  .xhs-search > *{margin:0 7px 0 0}
+  .xhs-search > *:last-child{margin-right:0}
+  .xhs-prof-top > *{margin:0 13px 0 0}
+  .xhs-prof-top > *:last-child{margin-right:0}
+  .viewer .v-foot > *{margin:0 10px 0 0}
+  .viewer .v-foot > *:last-child{margin-right:0}
+  .ig-top > *{margin:0 15px 0 0}
+  .ig-top > *:last-child{margin-right:0}
+  .note-row > *{margin:0 11px 0 0}
+  .note-row > *:last-child{margin-right:0}
+  .editor-tools > *{margin:0 8px 0 0}
+  .editor-tools > *:last-child{margin-right:0}
+  .tool > *{margin:0 4px 0 0}
+  .tool > *:last-child{margin-right:0}
+  .slider-row > *{margin:0 10px 0 0}
+  .slider-row > *:last-child{margin-right:0}
+  /* 证据册 */ .evi > *{margin:0 10px 0 0}
+  /* 证据册 */ .evi > *:last-child{margin-right:0}
+  .evi-card .eh > *{margin:0 10px 0 0}
+  .evi-card .eh > *:last-child{margin-right:0}
+  .evi-card .eh .es > *{margin:0 4px 0 0}
+  .evi-card .eh .es > *:last-child{margin-right:0}
+  .evi-mini > *{margin:0 6px 0 0}
+  .evi-mini > *:last-child{margin-right:0}
+  .notice > *{margin:0 8px 0 0}
+  .notice > *:last-child{margin-right:0}
+  .hintpop .hp-h > *{margin:0 7px 0 0}
+  .hintpop .hp-h > *:last-child{margin-right:0}
+  .hintpop .hp-acts > *{margin:0 8px 0 0}
+  .hintpop .hp-acts > *:last-child{margin-right:0}
+}
+
 </style>
 </head>
 <body>
@@ -905,26 +1138,26 @@ body:has(.desktop) .hintbtn{bottom:calc(136px + env(safe-area-inset-bottom, 0px)
 const CFG = {
   /* ---- 虚构平台名 ---- */
   pf: {
-    weibo:   { name:'微波',    app:'微波',   color:'#f5a623' },
+    weibo:   { name:'微浪',    app:'微浪',   color:'#f5a623' },
     wechat:  { name:'微讯',    app:'微讯',   color:'#3eb575' },
     bbs:     { name:'吃瓜小组', app:'吃瓜小组', color:'#2b6cb0' },
-    music:   { name:'云音乐',  app:'云音乐', color:'#d33a3a' },
+    music:   { name:'云乐',  app:'云乐', color:'#d33a3a' },
     xhs:     { name:'红书',    app:'红书',   color:'#ff2442' },
-    ig:      { name:'Insgram', app:'Insgram', color:'#c13584' },
+    ig:      { name:'拾光', app:'拾光', color:'#c13584' },
     note:    { name:'记录',    app:'记录',   color:'#e8a33d' },
     editor:  { name:'叠图台',  app:'叠图台', color:'#5b6ee1' }
   },
 
   /* ---- 虚构人物 ---- */
   people: {
-    idol:  { name:'沈亦舟', short:'SYZ', bd:'1024', ip:'上海', role:'偶像组合成员' },
+    idol:  { name:'沈嘉树', short:'SJS', bd:'1024', bdText:'10月24日', ip:'上海', role:'偶像组合成员' },
     stan:  { name:'星河不落', role:'应援站站长' },
     bestie:{ name:'林小满', role:'玩家闺蜜' },
-    girl:  { name:'柚子慢慢', xhsId:'柚子慢慢', role:'女方小红书' },
-    girlWB:{ name:'打烊前的月亮', role:'女方微博小号' },
+    girl:  { name:'柚子慢慢', xhsId:'柚子慢慢', role:'女方红书' },
+    girlWB:{ name:'打烊前的月亮', role:'女方微浪小号' },
     doubt: { name:'不吃香菜谢谢', role:'论坛匿名爆料者' },
-    pal:   { name:'夜航船', role:'一起听歌用户' },
-    music: { name:'待定', role:'疑似偶像音乐小号' }
+    pal:   { name:'夜航船', role:'女方云乐小号（本人运营）' },
+    music: { name:'树下听雨', role:'疑似偶像音乐小号' }
   },
 
   /* ---- 账号数值（全页面统一，均不是剧情线索） ---- */
@@ -934,19 +1167,23 @@ const CFG = {
     girlXhs:'86'        // 新开生活号：几十至一百多
   },
 
-  /* ---- 女方小红书：昵称与 UID 是两个不同字段 ---- */
+  /* ---- 女方红书：昵称与 UID 是两个不同字段 ---- */
   girlXhsUid: 'xhs_1024mm',
-  /* ---- 女方在其他平台长期使用的旧昵称（微博搜索用，区别于微博小号最终昵称） ---- */
+  /* ---- 女方在其他平台长期使用的旧昵称（微浪搜索用，区别于微浪小号最终昵称） ---- */
   girlOldNick: '汽水味的月亮',
-  /* ---- 微博搜索：可以进入发现链的关键词（旧昵称 / 改名后的现昵称，两种写法都成立） ---- */
+  /* ---- 她刚开通红书时（2023 年）用过的昵称：
+     与「汽水味的月亮」不同，所以熟人会问「怎么新平台改名了」，
+     也与现在的「柚子慢慢」不同。三者互相独立，不能混用。 */
+  girlXhsOldNick: '橘子味的月亮',
+  /* ---- 微浪搜索：可以进入发现链的关键词（旧昵称 / 改名后的现昵称，两种写法都成立） ---- */
   weiboSearchKeys: ['汽水味的月亮', '打烊前的月亮'],
 
   /* ---- 关键日期 ----
      时间线设计原则（按 v3 修订文档第 3 / 11 节）：
      基准"今天" = 2026-09-30，站姐关站 = 2026-09-29
      玩家先在 2026-09 看到当下事件，再通过搜索/主页历史逐步翻到旧内容。
-     "2024-03-17" 不是开场目标，只在女方微博揭示后才产生意义。
-     纪念日与开场"爱你"微博日期必须完全一致。               */
+     "2024-03-17" 不是开场目标，只在女方微浪揭示后才产生意义。
+     纪念日与开场"爱你"微浪日期必须完全一致。               */
   dates: {
     /* 近期 —— 2026-09 */
     today:'2026-09-30',
@@ -957,7 +1194,7 @@ const CFG = {
     idolFilm:'2026-09-26',
     idolRehearsal:'2026-09-24',
 
-    /* 女方小红书（2026-09） */
+    /* 女方红书（2026-09） */
     xhsDessert:'2026-09-24',
     xhsWatch:'2026-09-20',
 
@@ -979,17 +1216,36 @@ const CFG = {
     girlBusy:'2023-11-02',
     girlFirst:'2023-05-11',
 
-    /* 演唱会（近期）+ 纪念日 */
-    concert:'2026-09-20',
-    concertYear:'2026'
+    /* 演唱会（2024 巡演首站）+ 纪念日 */
+    concert:'2024-08-24',
+    concertYear:'2024'
   },
 
-  /* ---- 音乐小号 ----
+  /* ---- 音乐小号（男方 / 疑似偶像）----
      生日数字 1024 与偶像公开生日一致；一起听歌 682 小时为剧情线索。
-     昵称：改用普通、隐晦、不易一眼认出男方的昵称（集中在此，便于后续替换）。 */
+     昵称：普通、隐晦、不易一眼认出男方（集中在此，便于后续替换）。 */
   musicId:'10240617',
-  musicNick:'雾里看路灯',
-  listenTogether:'682'
+  musicNick:'树下听雨',
+  listenTogether:'682',
+  /* ---- 音乐小号的「关系绑定」：平台侧的身份暗示，不写结论。
+     玩家自行把这些和偶像公开生日 / 女方账号对上。 ---- */
+  coupleBind: {
+    mode:'心动模式',
+    days:'817',
+    since:'2024-07-06',
+    listName:'一起听 · 私密歌单',
+    songs:'38'
+  },
+
+  /* ---- 女方云乐小号（本人运营，与"夜航船"是同一个账号）----
+     两个平台的昵称不同：云乐叫「雨停之前」，微浪叫「打烊前的月亮」，
+     红书当前叫「柚子慢慢」，早年所有平台都用「汽水味的月亮」。 */
+  girlMusicNick:'雨停之前',
+
+  /* ---- 男方微浪推荐过的歌曲 / 电影（与云乐小号动态一一对应，
+     歌名、电影名、日期、作者集中在此，避免两个平台名字不一致）---- */
+  idolSong: { title:'晚风经过', artist:'陈屿', date:'2026-09-29' },
+  idolFilm: { title:'海边的克莱因', ostd:'海边的克莱因（原声带）', date:'2026-09-26' }
 };
 
 
@@ -1275,7 +1531,7 @@ const IMG = (() => {
     <ellipse cx="300" cy="600" rx="66" ry="14" fill="#8f8271" opacity=".55"/>
     <rect width="600" height="600" fill="url(#vig)"/>`;
   }
-  /* ---------- 微博截图：站姐被删动态 ---------- */
+  /* ---------- 微浪截图：站姐被删动态 ---------- */
   function screenshot(){
     return defs + `
     <rect width="600" height="760" fill="#f2f2f5"/>
@@ -1291,7 +1547,7 @@ const IMG = (() => {
     <text x="30" y="268" font-family="sans-serif" font-size="30" fill="#22222a">以后可能不会再来这里了。</text>
     <text x="30" y="312" font-family="sans-serif" font-size="30" fill="#22222a">有些事，知道了也没用。</text>
     <rect y="346" width="600" height="46" fill="#fff"/>
-    <text x="30" y="378" font-family="sans-serif" font-size="22" fill="#a3a3af">9-29 02:14 · 来自 iPhone</text>
+    <text x="30" y="378" font-family="sans-serif" font-size="22" fill="#a3a3af">9-29 02:14 · 来自 星环手机</text>
     <rect y="412" width="600" height="348" fill="#fff"/>
     <text x="30" y="456" font-family="sans-serif" font-size="22" fill="#a3a3af">截图于 09-29 02:16 · 刷新后该动态已消失</text>
     <line x1="30" y1="484" x2="570" y2="484" stroke="#eee" stroke-width="2"/>
@@ -1300,7 +1556,7 @@ const IMG = (() => {
     <text x="30" y="624" font-family="sans-serif" font-size="24" fill="#4a4a53">你看看吧……有点吓人</text>
     <text x="30" y="690" font-family="sans-serif" font-size="21" fill="#b9b9c2">09-29 02:16</text>`;
   }
-  /* ---------- 小红书男性手部照片（女生视角的桌面照） ---------- */
+  /* ---------- 红书男性手部照片（女生视角的桌面照） ---------- */
   function xhsHand(){
     return defs + `
     <rect width="600" height="600" fill="url(#wood)"/>
@@ -1382,6 +1638,8 @@ const IMG = (() => {
     <rect width="600" height="760" fill="#1d1c26"/>
     <rect width="600" height="760" fill="url(#skyNight)" opacity=".55"/>
     <text x="40" y="86" font-family="sans-serif" font-size="26" fill="#b6b6c6">一起听</text>
+    <rect x="404" y="56" width="156" height="46" rx="23" fill="#3a3550"/>
+    <text x="482" y="87" font-family="sans-serif" font-size="24" fill="#e8c96b" text-anchor="middle">${CFG.coupleBind.mode}</text>
     <text x="40" y="146" font-family="sans-serif" font-size="44" font-weight="700" fill="#fff">累计一起听歌</text>
     <text x="40" y="252" font-family="sans-serif" font-size="86" font-weight="800" fill="#ffd66b">682</text>
     <text x="252" y="252" font-family="sans-serif" font-size="30" fill="#e6e6ef">小时</text>
@@ -1390,18 +1648,20 @@ const IMG = (() => {
     <text x="40" y="412" font-family="sans-serif" font-size="30" fill="#fff">09-27 23:41</text>
     <rect x="40" y="452" width="520" height="120" rx="18" fill="#2a2934"/>
     <circle cx="102" cy="512" r="34" fill="#4a4458"/>
-    <text x="102" y="524" font-family="sans-serif" font-size="30" fill="#c9c2dd" text-anchor="middle">舟</text>
-    <text x="152" y="500" font-family="sans-serif" font-size="28" fill="#fff">S.Y.Z.</text>
+    <text x="102" y="524" font-family="sans-serif" font-size="30" fill="#c9c2dd" text-anchor="middle">树</text>
+    <text x="152" y="500" font-family="sans-serif" font-size="28" fill="#fff">S.J.S.</text>
     <text x="152" y="538" font-family="sans-serif" font-size="23" fill="#9a9aa8">听歌排行 · 私密</text>
     <circle cx="498" cy="512" r="34" fill="#58506a"/>
-    <text x="498" y="524" font-family="sans-serif" font-size="30" fill="#dcd6e8" text-anchor="middle">船</text>
-    <text x="440" y="500" font-family="sans-serif" font-size="28" fill="#fff" text-anchor="end">夜航船</text>
+    <text x="498" y="524" font-family="sans-serif" font-size="30" fill="#dcd6e8" text-anchor="middle">雨</text>
+    <text x="440" y="500" font-family="sans-serif" font-size="28" fill="#fff" text-anchor="end">${CFG.girlMusicNick}</text>
     <text x="440" y="538" font-family="sans-serif" font-size="23" fill="#9a9aa8" text-anchor="end">已听 682 小时</text>
-    <text x="40" y="640" font-family="sans-serif" font-size="24" fill="#8d8d9a">共同听过的歌</text>
-    <text x="40" y="686" font-family="sans-serif" font-size="26" fill="#e6e6ef">《晚风告白》 · 147 次</text>
-    <text x="40" y="730" font-family="sans-serif" font-size="26" fill="#e6e6ef">《一千零一个夜》 · 92 次</text>`;
+    <line x1="40" y1="606" x2="560" y2="606" stroke="#4a4a5c" stroke-width="2"/>
+    <text x="40" y="650" font-family="sans-serif" font-size="24" fill="#8d8d9a">已绑定情侣关系</text>
+    <text x="560" y="650" font-family="sans-serif" font-size="24" fill="#ffd66b" text-anchor="end">${CFG.coupleBind.days} 天</text>
+    <text x="40" y="694" font-family="sans-serif" font-size="24" fill="#8d8d9a">共同听过的歌</text>
+    <text x="40" y="732" font-family="sans-serif" font-size="26" fill="#e6e6ef">《${CFG.idolSong.title}》 · 147 次</text>`;
   }
-  /* ---------- 女方微博小号时间线截图 ---------- */
+  /* ---------- 女方微浪小号时间线截图 ---------- */
   function girlWBShot(){
     return defs + `
     <rect width="600" height="880" fill="#fff"/>
@@ -1427,23 +1687,27 @@ const IMG = (() => {
         <line x1="40" y1="162" x2="560" y2="162" stroke="#f2f2f5" stroke-width="2"/>
       </g>`).join('')}`;
   }
-  /* ---------- 夜航船动态里的「新账号」截图（不可点击，只能看） ---------- */
+  /* ---------- 女方云乐小号动态里的「新开红书账号」截图 ----------
+     这是她刚开通红书时（2023 年）的旧动态截图。
+     截图里显示的是她当时的昵称「橘子味的月亮」——注意不是「汽水味的月亮」，
+     所以下面的熟人评论才会问「怎么新平台改名了」；
+     也与现在的昵称「柚子慢慢」不同。UID 与现在搜索用的一致。 */
   function xhsAcctShot(){
     return defs + `
     <rect width="600" height="820" fill="#101017"/>
     <rect x="0" y="0" width="600" height="120" fill="#1a1a24"/>
-    <text x="40" y="70" font-family="sans-serif" font-size="26" fill="#9a9aa8">图片 · 09-26 22:14</text>
+    <text x="40" y="70" font-family="sans-serif" font-size="26" fill="#9a9aa8">图片 · 2023-04-16 21:02</text>
     <rect x="30" y="150" width="540" height="640" rx="22" fill="#fff"/>
-    <circle cx="120" cy="270" r="52" fill="#f7d7e0"/>
-    <text x="120" y="288" font-family="sans-serif" font-size="46" fill="#c9788f" text-anchor="middle">柚</text>
-    <text x="200" y="252" font-family="sans-serif" font-size="38" font-weight="700" fill="#22222a">柚子慢慢</text>
+    <circle cx="120" cy="270" r="52" fill="#f7e0c8"/>
+    <text x="120" y="288" font-family="sans-serif" font-size="46" fill="#c9903e" text-anchor="middle">橘</text>
+    <text x="200" y="252" font-family="sans-serif" font-size="38" font-weight="700" fill="#22222a">${CFG.girlXhsOldNick}</text>
     <text x="200" y="296" font-family="sans-serif" font-size="25" fill="#9a9aa6">红书号：${CFG.girlXhsUid}</text>
     <rect x="200" y="316" width="112" height="42" rx="21" fill="#ff2442"/>
     <text x="256" y="344" font-family="sans-serif" font-size="24" fill="#fff" text-anchor="middle">已关注</text>
     <text x="70" y="416" font-family="sans-serif" font-size="26" fill="#33333c">照片放这里。</text>
     <text x="70" y="456" font-family="sans-serif" font-size="26" fill="#33333c">不太擅长露脸，偶尔会记在另一个地方。</text>
     <line x1="70" y1="500" x2="530" y2="500" stroke="#f0f0f4" stroke-width="2"/>
-    <text x="110" y="556" font-family="sans-serif" font-size="30" fill="#22222a" text-anchor="middle">8</text>
+    <text x="110" y="556" font-family="sans-serif" font-size="30" fill="#22222a" text-anchor="middle">2</text>
     <text x="110" y="592" font-family="sans-serif" font-size="23" fill="#9a9aa6" text-anchor="middle">笔记</text>
     <text x="270" y="556" font-family="sans-serif" font-size="30" fill="#22222a" text-anchor="middle">12</text>
     <text x="270" y="592" font-family="sans-serif" font-size="23" fill="#9a9aa6" text-anchor="middle">关注</text>
@@ -1493,13 +1757,13 @@ const IMG = (() => {
    阶段严格顺序推进，未解锁的入口不可点击。
    ===================================================================== */
 const STAGES = [
-  { id:0, key:'weibo_open',   title:'开场：微博', desc:'知名站姐突然宣布关站' },
+  { id:0, key:'weibo_open',   title:'开场：微浪', desc:'知名站姐突然宣布关站' },
   { id:1, key:'wechat_bestie',title:'微讯：闺蜜', desc:'闺蜜发来被删除的动态截图' },
   { id:2, key:'bbs',          title:'吃瓜小组',   desc:'寻找关站的解释' },
-  { id:3, key:'music',        title:'云音乐',     desc:'搜索论坛留下的账号' },
+  { id:3, key:'music',        title:'云乐',     desc:'搜索论坛留下的账号' },
   { id:4, key:'xhs',          title:'红书',       desc:'找到不露脸的生活号' },
-  { id:5, key:'ig',           title:'Insgram',   desc:'旅行轨迹与手表对照' },
-  { id:6, key:'girl_wb',      title:'女方微博小号', desc:'恋爱时间线' },
+  { id:5, key:'ig',           title:'拾光',   desc:'旅行轨迹与手表对照' },
+  { id:6, key:'girl_wb',      title:'女方微浪小号', desc:'恋爱时间线' },
   { id:7, key:'evidence',     title:'证据整理',   desc:'决定是否公开' }
 ];
 
@@ -1511,26 +1775,26 @@ const EVIDENCE = [
     detail:'评论区一个默认头像账号留下这句留言，被反驳后未再回复。该账号注册约一两年，历史发帖几乎都围绕同一位偶像。' },
   { key:'bbsOld', stage:2, title:'半年前的一条爆料帖', from:'吃瓜小组',
     detail:'该账号半年前发过一条"某男偶像有嫂子了，不信等着看"的帖子，当时无人回应。几天后有人顶上来追问，楼主没有回复。' },
-  { key:'musicId', stage:3, title:'音乐账号资料多处对应', from:'云音乐',
-    detail:'账号昵称含数字 1024；IP属地显示上海；最近收听的歌，与偶像微博分享的歌曲相同；动态发布时间与偶像发博时间接近。' },
-  { key:'listen', stage:3, title:'小号与"夜航船"一起听歌 682 小时', from:'云音乐',
-    detail:'该小号与用户"夜航船"一起听歌累计 682 小时，最近一次在 09-27 深夜。这个数字在同一平台上属于相当高的互动强度。' },
-  { key:'xhsHand', stage:4, title:'小红书照片中的男性手部与腕表', from:'红书',
+  { key:'musicId', stage:3, title:'音乐账号资料多处对应', from:'云乐',
+    detail:'账号资料里的生日数字与偶像公开生日相同，IP属地显示上海；最近收听的《晚风经过》与偶像微浪推荐的是同一首歌；动态发布时间与偶像发博时间接近。' },
+  { key:'listen', stage:3, title:'小号与「雨停之前」一起听歌 682 小时', from:'云乐',
+    detail:'该小号与用户「雨停之前」一起听歌累计 682 小时，最近一次在 09-27 深夜。这个数字在同一平台上属于相当高的互动强度。' },
+  { key:'xhsHand', stage:4, title:'红书照片中的男性手部与腕表', from:'红书',
     detail:'女方一张不露脸的生活照里出现男性手部，手腕上戴着一块辨识度较高的钢带腕表，表盘与表带细节清晰可辨。' },
   { key:'travel', stage:4, title:'女方旅行时间地点', from:'红书 · 记事本',
-    detail:'云南大理 2025-05-02；厦门 2025-04-12；重庆 2025-10-06。这三条与偶像同期发布的地点一致。' },
-  { key:'igMatch', stage:5, title:'偶像同城同景点动态', from:'Insgram',
-    detail:'2025-05-02 偶像发布的大理照片，与女方同一天、同一地点。时间与取景角度相近。' },
-  { key:'watch', stage:5, title:'腕表外观对照', from:'红书 + Insgram',
+    detail:'云南大理 2024-05-02；厦门 2025-04-12；重庆 2024-10-06。这三条与偶像同期发布的地点一致。' },
+  { key:'igMatch', stage:5, title:'偶像同城同景点动态', from:'拾光',
+    detail:'2024-05-02 偶像发布的大理照片，与女方同一天、同一地点。时间与取景角度相近。' },
+  { key:'watch', stage:5, title:'腕表外观对照', from:'红书 + 拾光',
     detail:'偶像近期自拍中的腕表，与女方照片中的腕表在外观、钢带纹路与表盘刻度上高度相似。' },
   { key:'overlay', stage:5, title:'手表叠图比对结果', from:'拼图台',
     detail:'把偶像自拍中的手腕与女方照片中的手腕叠合后，表盘、表冠位置与钢带走向基本重合，未发现明显差异。' },
-  { key:'girlWB', stage:6, title:'女方微博小号的恋爱时间线', from:'女方微博小号',
-    detail:'近三年的文字记录，多次提到男朋友是艺人，并使用缩写 S.Y.Z.。' },
-  { key:'concert', stage:6, title:'演唱会同日对应', from:'女方微博小号',
-    detail:'2026-09-20 偶像演唱会当晚，女方发布"今天在体育馆三排，看着他在台上发光"，同日同场地。' },
-  { key:'anniv', stage:6, title:'纪念日与开场营业微博对应', from:'女方微博小号 + 微博',
-    detail:'女方写下"第三个纪念日。他说他今天发的每条都在说给我听"。开场那条被粉丝吐槽"今天又不是 520，怎么突然这么爱我们"的甜蜜营业微博，发布于同一天。' }
+  { key:'girlWB', stage:6, title:'女方微浪小号的恋爱时间线', from:'女方微浪小号',
+    detail:'近三年的文字记录，多次提到自己的男朋友是艺人，并在几条深夜微浪里只写下小写字母「sjs」来指代他。这条线索只有在逐条读完她的微浪之后才成立。' },
+  { key:'concert', stage:6, title:'演唱会同日对应', from:'女方微浪小号',
+    detail:'2024-08-24 偶像演唱会当晚，女方发布"今天在体育馆三排，看着他在台上发光"，同日同场地。' },
+  { key:'anniv', stage:6, title:'纪念日与开场营业微浪对应', from:'女方微浪小号 + 微浪',
+    detail:'女方写下"第三个纪念日。他说他今天发的每条都在说给我听"。开场那条被粉丝吐槽"今天又不是 520，怎么突然这么爱我们"的甜蜜营业微浪，发布于同一天。' }
 ];
 
 /* 玩家是否拥有该证据 */
@@ -1553,45 +1817,48 @@ function freshState(){
     /* 跨 APP 共享的内部剪贴板 + 各 APP 独立搜索历史 */
     clip: { text:'', at:0 },
     searches: {},            // app -> [ {q, ok, target, at} ]
-    seen: {},                // 通用"已看过"记录（如微博搜索结果里的某条）
+    seen: {},                // 通用"已看过"记录（如微浪搜索结果里的某条）
     flags: {
       weiboStanSeen:false,     // 看过站姐主页
       stanAskShown:false,      // 站姐主页退出疑问已弹出过
-      guideWeibo:false,        // 开场站姐微博高亮引导已展示
+      guideWeibo:false,        // 开场站姐微浪高亮引导已展示
+      guideTipShown:false,     // 开场玩法说明弹窗已看过
       weiboIdolSeen:false,     // 看过偶像主页
-      idolOldOpen:false,       // 已展开「查看更早微博」
+      idolOldOpen:false,       // 已展开「查看更早微浪」
       wechatShot:false,        // 已下载闺蜜截图
       wxNotif1:false,          // 首条闺蜜通知已弹
       wxNotif2:false,          // 截图消息通知已弹
-      wechatDone:false,        // 微信对话结束
+      wechatDone:false,        // 微讯对话结束
       wxReplied:false,         // 已回复闺蜜
       wxShotSent:false,        // 闺蜜已发出截图
       bbsTargetRead:false,     // 读过目标帖
       bbsDoubtSeen:false,      // 看过爆料者主页
       musicSearched:false,
-      musicNumCopied:false,    // 已从论坛复制云音乐账号数字
-      musicSearchMiss:false,   // 云音乐最近一次无效搜索词
-      girlUidCopied:false,     // 已复制女方小红书 UID
+      musicNumCopied:false,    // 已从论坛复制云乐账号数字
+      musicSearchMiss:false,   // 云乐最近一次无效搜索词
+      girlUidCopied:false,     // 已复制女方红书 UID
       xhsSearchMiss:false,     // 红书最近一次无效搜索词
-      wbSearchMiss:false,      // 微博最近一次搜索词
+      wbSearchMiss:false,      // 微浪最近一次搜索词
       wbOldAcctSeen:false,     // 看过「该用户不存在」页
       wbOldNickCopied:false,   // 已复制女方旧昵称
       musicMajorSeen:false,    // 看过疑似小号主页
       musicFriendSeen:false,   // 看过夜航船主页
       xhsProfileSeen:false,
       xhsHandSaved:false,
-      xhsTipSeen:false,        // 已看到小红书"另一个地方"提示
+      xhsTipSeen:false,        // 已看到红书"另一个地方"提示
       igTripFound:false,
       igWatchFound:false,
       overlaySaved:false,
       palRevisitSeen:false,    // 叠图后回访夜航船
-      weiboSearchReady:false,  // 微博搜索入口已解锁
+      weiboSearchReady:false,  // 微浪搜索入口已解锁
       weiboSearchDone:false,   // 已搜到「打烊前的月亮」
       girlWBSeen:false,
       girlWBAnnivSeen:false,
-      girlWBLoaded:2,          // 已加载的微博条数
+      girlWBLoaded:2,          // 已加载的微浪条数
       girlConcertRead:false,   // 女方演唱会条目已读
-      idolConcertRead:false    // 男方演唱会动态已读
+      idolConcertRead:false,   // 男方演唱会动态已读
+      storyTips:{},            // 已弹过的剧情弹窗：key -> true
+      storyBestie1:false       // 首条闺蜜"线索共享"通知已弹
     
     },
     ending: null,            // 'A' | 'B'
@@ -1609,12 +1876,12 @@ function load(){
     if(!raw) return freshState();
     const d = JSON.parse(raw);
     const base = freshState();
-    return {
-      ...base, ...d,
-      flags: {...base.flags, ...(d.flags||{})},
-      notes: {...base.notes, ...(d.notes||{})},
-      evidence: d.evidence || {}
-    };
+    /* 【minitool】对象 spread 属 ES2018，超出 Chrome 61 基线，改用 Object.assign */
+    const merged = Object.assign({}, base, d);
+    merged.flags = Object.assign({}, base.flags, d.flags || {});
+    merged.notes = Object.assign({}, base.notes, d.notes || {});
+    merged.evidence = d.evidence || {};
+    return merged;
   }catch(e){ return freshState(); }
 }
 function save(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} }
@@ -1660,6 +1927,30 @@ function gainEvidence(key, msg){
   S.evidence[key] = true;
   save();
   if(msg) toast(msg);
+  /* 【v5.3】这里不再自动弹窗。
+     收齐引导统一由"退出微浪主页回到桌面"这个动作触发
+     （见 go() / appQuitGuide），避免和读取过程中的剧情弹窗同时出现。 */
+  return true;
+}
+/* 收齐引导是否待触发（不弹窗，只判定）。
+   玩家收完最后一条证据、退出当前 APP 回桌面时才真正展示。 */
+function allEvidencePending(){
+  if(S.ending) return false;
+  if(Object.keys(S.evidence||{}).length < EVIDENCE.length) return false;
+  if(!S.flags.storyTips || !S.flags.storyTips.allEvidence) return true;
+  return false;
+}
+/* 收齐引导（只弹一次，写入 S.flags.storyTips）
+   文案合并了原来"全都看完了"和"素材收齐了"两条，
+   确保退出微浪回桌面时只弹一个弹窗。 */
+function maybeAllEvidenceTip(){
+  if(!allEvidencePending()) return false;
+  storyTip('allEvidence', {
+    title:'都看完了',
+    thinking:'照片、日期、那块表，还有这些文字。我之前看到的每一件东西，都只是一个巧合。<br>可现在再回头看，它们已经连成了一条线。<br><br>素材都收集到证据册了。该看的东西，差不多都已经看过一遍。',
+    hint:'差不多已经可以判断了。打开证据册，把最后的证据整理一下。',
+    ok:'去证据册'
+  });
   return true;
 }
 /* 兼容旧调用点 */
@@ -1674,9 +1965,16 @@ const NAV = { stack:[] };          // 平台内页导航栈
 let APP_RENDER = {};
 
 function go(app, opts={}){
+  const from = S.app;
   S.app = app; save();
   if(!opts.keepNav) NAV.stack = [];
   render();
+  /* 【v5.3】退出微浪主页（或任意 APP）回到桌面时，触发"证据收齐"引导。
+     放在这里而不是 gainEvidence 里，是为了让弹窗出现在玩家离开读取流程、
+     回到桌面的那一刻，语义更自然，也不会和阅读途中的剧情弹窗撞在一起。 */
+  if(app==='desktop' && from!=='desktop'){
+    if(allEvidencePending()) setTimeout(maybeAllEvidenceTip, 260);
+  }
 }
 function push(view){
   NAV.stack.push(view);
@@ -1718,7 +2016,7 @@ function badgeFor(app){
   if(app==='music'    && S.stage===3 && !S.flags.musicFriendSeen) return true;
   if(app==='xhs'      && S.stage===4 && !S.flags.xhsHandSaved)  return true;
   if(app==='ig'       && S.stage===5 && !S.flags.overlaySaved)  return true;
-  /* 叠图之后：回访夜航船才能解锁微博搜索 */
+  /* 叠图之后：回访夜航船才能解锁微浪搜索 */
   if(app==='music'    && S.flags.overlaySaved && !S.flags.palRevisitSeen) return true;
   if(app==='weibo'    && S.flags.weiboSearchReady && !S.flags.weiboSearchDone) return true;
   if(app==='evidence' && S.stage===7 && !S.ending) return true;
@@ -1805,6 +2103,11 @@ function render(){
   const hi = $('#homeindicator');
   vp.innerHTML = '';
   $$('.taskbar, .hintbtn, .hintpop').forEach(n=>n.remove());
+  /* 【minitool】替代 body:has(.desktop)：手动在 body 上切换 .on-desktop */
+  try{
+    if(S.app==='desktop') document.body.classList.add('on-desktop');
+    else document.body.classList.remove('on-desktop');
+  }catch(e){}
 
   if(S.app==='splash'){
     vp.appendChild(splashNode());
@@ -1847,8 +2150,8 @@ function render(){
 
 /* 底部导航第三格在不同 APP 里显示对应名称 */
 function appMenuLabel(app){
-  const m = { weibo:'微博', wechat:'微讯', bbs:'小组', music:'云音乐',
-              xhs:'红书', ig:'Insgram', note:'记录', evidence:'证据册', editor:'叠图台' };
+  const m = { weibo:'微浪', wechat:'微讯', bbs:'小组', music:'云乐',
+              xhs:'红书', ig:'拾光', note:'记录', evidence:'证据册', editor:'叠图台' };
   return m[app] || '菜单';
 }
 
@@ -1869,7 +2172,7 @@ function splashNode(){
     </div>
     <div class="sp-intro sp-anim d2">
       <p>你是他的粉丝，很多年。</p>
-      <p>今天打开微波的时候，你关注了六年的应援站 <span class="hl">星河不落</span> 发了这样一条微博：</p>
+      <p>今天打开微浪的时候，你关注了六年的应援站 <span class="hl">星河不落</span> 发了这样一条微浪：</p>
       <p style="color:#9a94ab">"此账号从今天起清空，今后不再更新。"</p>
       <p>没有原因，没有告别。</p>
       <p>答案散在几个平台里。<br>你自己去找。</p>
@@ -1904,7 +2207,7 @@ function splashNode(){
    ===================================================================== */
 const HINTS = {
   0: {
-    l1:'最上面那条微博的发布者，经营了很久。',
+    l1:'最上面那条微浪的发布者，经营了很久。',
     l2:'去她的<b>主页</b>看看，然后点开第二条那位<b>偶像</b>的头像。',
     l3:'看完就回桌面，等红点亮起来。'
   },
@@ -1920,7 +2223,7 @@ const HINTS = {
   },
   3: {
     l1:'那串数字像某个平台的账号。',
-    l2:'在云音乐<b>搜索</b>它，然后点进主页。',
+    l2:'在云乐<b>搜索</b>它，然后点进主页。',
     l3:'主页里有一条<b>一起听</b>记录，点开那个人。'
   },
   4: {
@@ -1929,14 +2232,14 @@ const HINTS = {
     l3:'旅行帖的<b>日期地点</b>也记进记事本。'
   },
   5: {
-    l1:'Insgram 里有些照片，和她去过的地方很像。',
+    l1:'拾光 里有些照片，和她去过的地方很像。',
     l2:'按记事本的日期，找<b>同一天同一座城市</b>的帖子。',
     l3:'自拍里那只手，去<b>拼图台</b>叠一下。'
   },
   6: {
     l1:'你知道她以前用过另一个名字。',
-    l2:'回微博，点搜索框，把那个名字<b>粘贴</b>进去再搜。',
-    l3:'往下翻，找那条<b>别人 @ 她</b>的微博，点进去看评论。'
+    l2:'回微浪，点搜索框，把那个名字填进去再搜。',
+    l3:'往下翻，找那条<b>别人 @ 她</b>的微浪，点进去看评论。'
   },
   7: {
     l1:'证据都在这里了，可以逐条点开回看。',
@@ -1952,7 +2255,7 @@ function deskNoteText(){
   if(S.ending) return `<b>调查已结束。</b>记录不会消失，随时可以回看。`;
   const stageWord = ['什么都没有发生','一件小事','一条爆料','一个账号','一张照片',
                      '两组日期','一条评论区','一个日期'][S.stage] || '调查中';
-  if(n===0 && S.stage===0) return `今天的微博有点安静。<br>你打算随便翻翻。`;
+  if(n===0 && S.stage===0) return `今天的微浪有点安静。<br>你打算随便翻翻。`;
   return `当前进度：<b>第 ${S.stage} / 7 阶段</b> · <b>${stageWord}</b><br>已整理 ${n} 条记录。`;
 }
 
@@ -1967,9 +2270,10 @@ function desktopNode(){
     const un = appUnlocked(x.app);
     const ic = APP_ICONS[x.app] || APP_ICONS.note;
     const badge = un && badgeFor(x.app);
+    /* 【v5.3】红点挂在 .appicon 上，不能放进 .ico（overflow:hidden 会裁掉） */
     return `<button class="appicon ${un?'':'locked'}" data-app="${x.app}" ${un?'':'aria-disabled="true"'}>
-      <div class="ico" style="background:${ic.bg};color:${ic.glyphColor}"><span style="position:relative;z-index:2">${ic.glyph}</span>
-        ${badge?'<span class="badge plain"></span>':''}</div>
+      ${badge?'<span class="badge plain"></span>':''}
+      <div class="ico" style="background:${ic.bg};color:${ic.glyphColor}"><span style="position:relative;z-index:2">${ic.glyph}</span></div>
       <div class="lbl">${x.label}</div></button>`;
   };
   d.innerHTML = `
@@ -1984,8 +2288,8 @@ function desktopNode(){
       const ic=APP_ICONS[a]||APP_ICONS.note; const un=appUnlocked(a); const badge=un&&badgeFor(a);
       const lbl = (DESK.find(x=>x.app===a)||{}).label || '';
       return `<button class="appicon ${un?'':'locked'}" data-app="${a}" ${un?'':'aria-disabled="true"'}>
-        <div class="ico" style="background:${ic.bg};color:${ic.glyphColor}"><span style="position:relative;z-index:2">${ic.glyph}</span>
-        ${badge?'<span class="badge plain"></span>':''}</div>
+        ${badge?'<span class="badge plain"></span>':''}
+        <div class="ico" style="background:${ic.bg};color:${ic.glyphColor}"><span style="position:relative;z-index:2">${ic.glyph}</span></div>
         <div class="lbl">${lbl}</div></button>`;}).join('')}</div>`;
   d.addEventListener('click', e=>{
     const b = e.target.closest('.appicon');
@@ -2004,7 +2308,7 @@ function openApp(app){
   }
   go(app);
 }
-/* 路由映射：'weibo' 可能是偶像微博或女方小号 */
+/* 路由映射：'weibo' 可能是偶像微浪或女方小号 */
 
 /* ---------- 结局页 ---------- */
 function endingNode(){
@@ -2015,12 +2319,12 @@ function endingNode(){
     <div class="ending A">
       <span class="etag">结局 A</span>
       <h2>曝光恋情 · 选择脱粉</h2>
-      <div class="para">你把这些天收集到的东西整理成一条长长的帖子：音乐账号的生日数字、682 小时的一起听歌、女方照片里那只戴表的手、两地重合的旅行日期、表盘叠合的比对图、还有那些写着 S.Y.Z. 的深夜文字。</div>
+      <div class="para">你把这些天收集到的东西整理成一条长长的帖子：音乐账号的生日数字、682 小时的一起听歌、女方照片里那只戴表的手、两地重合的旅行日期、表盘叠合的比对图、还有那些深夜写下的、只出现几个字母的句子。</div>
       <div class="para">帖子在凌晨发出。天亮之前，转发已经过了六位数。</div>
       <div class="para">热搜挂了整整两天。工作室发了一条措辞模糊的声明，没有承认，也没有否认。第三天，组合的巡演官宣延期；半个月后，两个代言解约。</div>
-      <div class="quote-mk">超话里分裂成两半。<br>一半人写长文告别，"我陪他走过最难的三年，可我不想再被骗了"。<br>另一半人留在原地，"没有看到他们牵手，我就不算看到"。<br>有人在你的评论区说谢谢，也有人骂你是最开始点火的那个人。</div>
+      <div class="quote-mk">应援圈里分裂成两半。<br>一半人写长文告别，"我陪他走过最难的三年，可我不想再被骗了"。<br>另一半人留在原地，"没有看到他们牵手，我就不算看到"。<br>有人在你的评论区说谢谢，也有人骂你是最开始点火的那个人。</div>
       <div class="para">你点了取关。清空相册的时候，手指在那个叫"星河不落"的截图上停了几秒——原来她当时，也是先知道了什么。</div>
-      <div class="para ctr">——你没有做错什么，你只是把看到的东西说了出来。</div>
+      <div class="para ctr">你把自己看到的内容发了出去。之后会发生什么，已经不再由你决定。</div>
       <div class="evi-mini">${EVIDENCE.filter(e=>evGot(e.key)).map(e=>`<span>${e.title}</span>`).join('')}</div>
       <div style="margin-top:20px"><button class="btn ghost" id="restart">重新开始</button></div>
     </div>`;
@@ -2031,7 +2335,7 @@ function endingNode(){
       <h2>保留怀疑 · 继续相信</h2>
       <div class="para">你把证据册从头翻到尾，又翻回来。每一件都对得上，可每一件都不是"亲眼看见"。</div>
       <div class="para">生日数字可以是巧合；682 小时可以是歌单重合；那只表钢带那么常见；旅行日期也许只是同一个热门的季节；叠图的两只手，你其实没法确认尺寸。</div>
-      <div class="quote-mk">你把那条写了一半的帖子删掉，清空了草稿箱。<br>然后回到超话，像什么都没发生过一样，继续签到、打榜、看他的舞台。</div>
+      <div class="quote-mk">你把那条写了一半的帖子删掉，清空了草稿箱。<br>然后回到应援圈，像什么都没发生过一样，继续签到、打榜、看他的舞台。</div>
       <div class="para">下一场演唱会你还是去了，还是坐在台下。灯光暗下来的那三秒，你忽然想起女方写过的一句话——"他说他今天发的每条都在说给我听"。</div>
       <div class="para">你摇了摇头，跟着全场一起喊他的名字。有些答案，你可能永远拿不到；你选择了不那么疼的那一种。</div>
       <div class="para ctr">——你保留了怀疑，也保留了自己的愿意。</div>
@@ -2092,7 +2396,77 @@ function showModal(innerHTML, opts={}){
   $('#screen').appendChild(m);
   return m;
 }
-function closeModal(){ $$('.modal').forEach(n=>n.remove()); }
+function closeModal(){
+  $$('.modal').forEach(n=>n.remove());
+  /* 【v5.3】任何弹窗被关掉后，都尝试弹下一个排队的剧情弹窗，
+     保证"一个触发完再触发另一个"。 */
+  if(typeof drainStoryTips === 'function') setTimeout(drainStoryTips, 60);
+}
+
+/* =====================================================================
+   【剧情弹窗】storyTip
+   —— 每个流程节点只弹一次（状态写入 S.flags.storyTips）。
+      两个作用：
+        ① thinking 内心独白：推进剧情，表现主角一步步发现真相的心境变化
+        ② hint     流程提示：告诉玩家接下来可以做什么（不写命令句也能看懂）
+   —— 不剧透身份 / 关系结论 / 具体答案，只描述"我看到了什么、我打算怎么做"。
+   ===================================================================== */
+function storyTip(key, cfg={}){
+  if(!key) return false;
+  if(!S.flags.storyTips) S.flags.storyTips = {};
+  if(S.flags.storyTips[key]) return false;
+  /* 【v5.3】同一时刻只允许一个剧情弹窗。
+     若当前已有剧情弹窗在展示，先入队，等前一个关掉再依次弹出，
+     避免两个弹窗叠在一起同时出现。 */
+  if(uiBusy()){
+    STORY_Q.push({key, cfg});
+    return true;
+  }
+  return showStoryTipNow(key, cfg);
+}
+const STORY_Q = [];
+/* 是否已有弹窗在屏幕上（剧情弹窗或通用弹窗 / 图片查看器都算） */
+function uiBusy(){
+  return !!document.querySelector('.modal .box') || !!document.querySelector('.viewer');
+}
+/* 队列里还有等待的弹窗时，立刻弹下一个 */
+function drainStoryTips(){
+  if(uiBusy() || !STORY_Q.length) return;
+  const nx = STORY_Q.shift();
+  showStoryTipNow(nx.key, nx.cfg);
+}
+function showStoryTipNow(key, cfg={}){
+  if(!S.flags.storyTips) S.flags.storyTips = {};
+  S.flags.storyTips[key] = true;
+  save();
+
+  const think = cfg.thinking ? `
+    <div class="st-think">
+      <div class="st-av">我</div>
+      <div class="st-tx">${cfg.thinking}</div>
+    </div>` : '';
+
+  const hint = cfg.hint ? `
+    <div class="st-hint">
+      <span class="st-hi">→</span>
+      <span>${cfg.hint}</span>
+    </div>` : '';
+
+  showModal(`${think}${hint}`, {
+    title: cfg.title || '心里想',
+    cls: 'story',
+    actions: [{ label: cfg.ok || '继续', onClick: ()=>{
+      closeModal();
+      if(cfg.onClose) cfg.onClose();
+      /* 关掉之后再看队列里有没有排队的 */
+      setTimeout(drainStoryTips, 80);
+    } }]
+  });
+  return true;
+}
+/* 【v5.2】不再提供 storyTipDelay。
+   文档第 2.1 / 五节明确要求：禁止用"进入页面 + setTimeout 延迟"冒充"玩家已看完"。
+   所有剧情弹窗必须由真实完成动作（点击、保存、对照、读完）调用 storyTip 触发。 */
 function confirmBox(title, body, okLabel, onOk){
   showModal(`<div style="text-align:center;color:#4a4a53;line-height:1.7">${body}</div>`, {
     title,
@@ -2241,7 +2615,7 @@ function bindAvatars(root, handler){
 /* =====================================================================
    【底部三级导航】
    ① 返回上一级  ② 返回手机桌面  ③ 当前 APP 菜单
-   —— 顶部不再放关键操作，避免被小红书内置浏览器覆盖
+   —— 顶部不再放关键操作，避免被红书内置浏览器覆盖
    ===================================================================== */
 function bottomNav(opts={}){
   const canBack = NAV.stack.length > 0;
@@ -2329,27 +2703,29 @@ function hideNotif(){
 }
 /* 闺蜜（林小满）专用通知 */
 function notifBestie(body, opts={}){
-  showNotif({ app:'wechat', title:'林小满', body, ico:'满', tone:'微讯', ...opts });
+  /* 【minitool】对象 spread 属 ES2018，改用 Object.assign */
+  showNotif(Object.assign({ app:'wechat', title:'林小满', body, ico:'满', tone:'微讯' }, opts));
 }
 
 /* =====================================================================
    【跨 APP 剪贴板】
    —— 所有平台共用一份内部 clipboard，跨 APP 保留，写入存档
+   —— 【minitool 改造】容器禁用系统剪贴板读写能力，
+      因此这里不再写系统剪贴板：
+        · 游戏内仍走同一套 S.clip 状态机 + onClipboardChange 广播，解谜流程不变
+        · 系统层改为「可选中文本 + 长按复制」——把文本渲染成 user-select:text，
+          并给出一次性的长按提示，由玩家自行长按选中
    ===================================================================== */
 function copyText(text, label){
-  S.clip = { text:String(text), at:Date.now() };
-  if(!S.searches[S.app]) S.searches[S.app] = [];
+  const t = String(text);
+  S.clip = { text:t, at:Date.now() };
   save();
-  /* 尽力写系统剪贴板，失败不影响主线（权限被拒是常见情况） */
-  try{
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      const p = navigator.clipboard.writeText(String(text));
-      if(p && p.catch) p.catch(()=>{});
-    }
-  }catch(e){}
-  toast('已复制：' + (label || text));
+  /* 【minitool】不写系统剪贴板，只提示"已记下"。
+     真正要复制时，编号在页面上是可选中文本（见 .copyable / .lp-text 样式），
+     玩家长按即可选中复制。这里刻意不弹 modal，避免打断解谜节奏。 */
+  toast('已记下：' + (label || t));
   /* 广播：各页面按需响应（不依赖 DOM 事件顺序） */
-  try{ if(typeof onClipboardChange==='function') onClipboardChange(String(text)); }catch(e){}
+  try{ if(typeof onClipboardChange==='function') onClipboardChange(t); }catch(e){}
 }
 /* 各 APP 按需覆写：默认无操作 */
 function onClipboardChange(text){
@@ -2374,8 +2750,11 @@ function clipText(){ return (S.clip && S.clip.text) || ''; }
 /* 最近搜索记录 */
 function pushSearch(app, q, ok, target){
   if(!S.searches[app]) S.searches[app] = [];
-  S.searches[app] = [{ q, ok:!!ok, target:target||'', at:Date.now() },
-                     ...S.searches[app].filter(x=>x.q!==q)].slice(0,6);
+  /* 【minitool】数组 spread 是 ES2015，可用；此处仅为可读性保持原写法 */
+  const head = [{ q, ok:!!ok, target:target||'', at:Date.now() }];
+  S.searches[app] = head.concat(
+    S.searches[app].filter(x=>x.q!==q)
+  ).slice(0,6);
   save();
 }
 /* 可复制文本节点：点击弹出上下文菜单 */
@@ -2396,8 +2775,10 @@ function openCtxMenu(e, text, label){
   closeSheet();
   const m = document.createElement('div');
   m.className = 'ctxmenu';
-  m.innerHTML = `<button class="ctx-item" data-cx="copy">复制</button>
-                 <button class="ctx-item cancel" data-cx="cancel">取消</button>`;
+  /* 【minitool】容器禁用系统剪贴板，菜单项语义改为"记下编号"，
+     并在选中后引导玩家长按文本手动复制。 */
+  m.innerHTML = '<button class="ctx-item" data-cx="copy">记下这个编号</button>' +
+                '<button class="ctx-item cancel" data-cx="cancel">取消</button>';
   const scr = $('#screen').getBoundingClientRect();
   const x = (e && e.clientX ? e.clientX : scr.width/2) - scr.left;
   const y = (e && e.clientY ? e.clientY : scr.height/2) - scr.top;
@@ -2435,13 +2816,13 @@ function openSearchPanel(opts){
     </div>
     <div class="sp-input">
       <span class="sp-ico">🔍</span>
-      <input id="spField" type="text" placeholder="输入或粘贴要搜索的内容" value="${esc(readyText)}">
-      <button class="sp-paste" data-sp="paste">粘贴</button>
+      <input id="spField" type="text" placeholder="输入或选择要搜索的内容" value="${esc(readyText)}">
+      <button class="sp-paste" data-sp="paste">填入</button>
     </div>
-    <div class="sp-sub">当前剪贴板</div>
+    <div class="sp-sub">已记下的编号</div>
     ${clip
       ? `<button class="sp-clip" data-sp="useclip"><span class="sp-clip-t">${esc(clip)}</span><span class="sp-clip-go">点击填入 ›</span></button>`
-      : `<div class="sp-empty">（剪贴板是空的。先去别的地方复制一段内容。）</div>`}
+      : `<div class="sp-empty">（你还没有记下任何编号。先去别的地方找到它。）</div>`}
     ${hist.length?`<div class="sp-sub">最近搜索</div>
       <div class="sp-hist">${hist.map((h,i)=>`<button class="sp-chip" data-sp="hist" data-i="${i}">${esc(h.q)}</button>`).join('')}</div>`:''}
     ${opts.suggest&&opts.suggest.length?`<div class="sp-sub">搜索发现</div>
@@ -2452,7 +2833,7 @@ function openSearchPanel(opts){
   const field = s.querySelector('#spField');
   const doSearch = ()=>{
     const q = (field.value||'').trim();
-    if(!q){ toast('先输入或粘贴要搜索的内容。'); return; }
+    if(!q){ toast('先输入或选择要搜索的内容。'); return; }
     closeSheet();
     onSearch(q);
   };
@@ -2471,20 +2852,22 @@ function openSearchPanel(opts){
   $('#screen').appendChild(s);
   setTimeout(()=>{ try{ field.focus(); }catch(e){} }, 80);
 }
-/* 搜索结果页：统一渲染（无结果 / 无关结果 / 命中） */
+/* 搜索结果页：统一渲染（无结果 / 无关结果 / 命中）
+   —— 每条结果区分 用户 / 微浪 / 话题 类型，层级清楚 */
 function searchResultNode(opts){
   const { title, q, items, note, like } = opts;
+  const TL = { user:'用户', post:'微浪', topic:'话题' };
   return `<div class="sr-wrap">
-    <div class="sr-bar">搜索：<b>${esc(q)}</b></div>
-    ${like?`<div class="sr-like">${esc(like)}</div>`:''}
+    <div class="sr-bar">搜索：<b>${esc(q)}</b>${like?`<span class="sr-like-in">${esc(like)}</span>`:''}</div>
     ${note?`<div class="sr-note">${note}</div>`:''}
     ${items.length
       ? items.map(it=>`
-        <div class="sr-item ${it.hit?'hit':''}" ${it.key?`data-sritem="${esc(it.key)}"`:''}>
+        <div class="sr-item ${it.hit?'hit':''} ${it.type?('sr-'+it.type):''}" ${it.key?`data-sritem="${esc(it.key)}"`:''}>
           <div class="sr-av" style="background:${it.bg||'#ececf2'};color:${it.fg||'#8b8b96'}">${esc(it.ico||'搜')}</div>
           <div class="sr-main">
-            <div class="sr-t">${esc(it.title)}</div>
-            <div class="sr-s">${it.sub||''}</div>
+            <div class="sr-t">${esc(it.title)}${it.type?`<span class="sr-type sr-type-${it.type}">${TL[it.type]||''}</span>`:''}</div>
+            ${it.sub?`<div class="sr-s">${esc(it.sub)}</div>`:''}
+            ${it.time?`<div class="sr-time">${esc(it.time)}</div>`:''}
           </div>
           ${it.hit?'<span class="sr-tag">相关</span>':''}
         </div>`).join('')
@@ -2525,65 +2908,95 @@ function bindNav(root, menuOpts={}){
 }
 
 /* =====================================================================
-   【微博数据】—— 首页灌水帖 / 偶像近期动态 / 更早的一条
+   【微浪数据】—— 首页灌水帖 / 偶像近期动态 / 更早的一条
    —— 文案原则（v3 文档第 2、5 节）：
       首页不出现任何引导性提示（无高亮、无箭头、无红字）；
-      更早的那条只用「查看更早微博」折叠，不写"日期有点意思"之类的话。
+      更早的那条只用「查看更早微浪」折叠，不写"日期有点意思"之类的话。
    ===================================================================== */
 const WB = {
   filler: [
-    { id:'f1', name:'追星省钱日记', time:'2026-09-30 09:12', from:'iPhone 15',
+    { id:'f1', name:'追星省钱日记', time:'2026-09-30 09:12', from:'星环 15',
       avatarHTML:avaColor('省',44,false,'#fde2c8','#c98a3e'),
       text:'整理了一下今年演唱会的票根，发现我居然一共去了 9 场……钱包：你已经没有尊严了。',
       imgs:[{key:'gen1', wide:true}], reposts:'312', comments:'86', likes:'1.2万' },
-    { id:'f2', name:'厨房废物日记', time:'2026-09-29 22:10', from:'Android',
+    { id:'f2', name:'厨房废物日记', time:'2026-09-29 22:10', from:'云屏',
       avatarHTML:avaColor('厨',44,false,'#d8ecd9','#5d9663'),
       text:'空气炸锅烤鸡翅翻车第四次。我宣布我和它暂时绝交。（附失败作品一张）',
       imgs:[{key:'gen2', wide:true}], reposts:'96', comments:'312', likes:'4520' }
   ],
-  /* 偶像近期公开动态（2026-09）：只当作普通营业，不承担任何推理功能 */
+  /* 偶像近期公开动态（2026-09）：只当作普通营业，不承担任何推理功能。
+     粉丝评论语气各异，部分由不同账号自然使用「小树苗」称呼。 */
   idolPosts: [
-    { id:'ipA', time:'2026-09-29 20:31', from:'iPhone 15 Pro',
-      text:'最近单曲循环这首，副歌部分很上头。睡前的朋友可以试试。<span class="tag">#深夜歌单#</span>',
+    { id:'ipA', time:'2026-09-29 20:31', from:'星环 15 Pro',
+      text:'最近单曲循环《晚风经过》，副歌部分很上头。睡前的朋友可以试试。<span class="tag">#深夜歌单#</span>',
       cms:[['今天也要早睡','你不是说最近要戒熬夜吗'],
            ['舟舟今天营业了吗','已加入歌单'],
            ['小岛汽水','副歌真的很洗脑'],
-           ['不吃香菜','哥最近怎么总在深夜发歌']],
-      reply:['沈亦舟','努力中，争取早点睡。'],
+           ['不吃香菜','哥最近怎么总在深夜发歌'],
+           ['小树苗爱营业','小树苗都在，哥早点休息']],
+      reply:['沈嘉树','努力中，争取早点睡。'],
       reposts:'2.1万', comments:'4862', likes:'12.4万' },
-    { id:'ipB', time:'2026-09-26 14:02', from:'iPhone 15 Pro',
+    { id:'ipB', time:'2026-09-26 14:02', from:'星环 15 Pro',
       text:'刚看完《海边的克莱因》，一个人坐在影院里很久没起身。推荐给喜欢安静电影的人。',
       cms:[['一颗薄荷糖','结尾那段长镜头真的绝'],
            ['小周同学','看了你的推荐去看了，谢谢'],
            ['夜行动物','他现在看电影都不发定位了'],
-           ['今天吃什么','一个人看这种片子容易走不出来']],
-      reply:['沈亦舟','散场之后走了很久。'],
+           ['今天吃什么','一个人看这种片子容易走不出来'],
+           ['家树的应援团','家树今天也辛苦了，好好吃饭']],
+      reply:['沈嘉树','散场之后走了很久。'],
       reposts:'1.6万', comments:'4023', likes:'9.4万' },
-    { id:'ipC', time:'2026-09-24 23:18', from:'iPhone 15 Pro',
+    { id:'ipC', time:'2026-09-24 23:18', from:'星环 15 Pro',
       text:'新专辑的歌排到第三遍了，今晚的排练有点上头。晚安。',
       cms:[['舟舟今天营业了吗','排练到这么晚，注意身体'],
            ['小岛汽水','期待新歌'],
            ['糖渍小星球','这个点还在练，认真的'],
-           ['不吃香菜','晚安哥']],
-      reply:['沈亦舟','快了，再磨几遍。'],
+           ['不吃香菜','晚安哥'],
+           ['小树苗本苗','新歌我都等不及了']],
+      reply:['沈嘉树','快了，再磨几遍。'],
       reposts:'1.2万', comments:'2874', likes:'8.8万' }
   ],
-  /* 更早的一条：需要点「查看更早微博」才展开。
-     正文只有两个字，不给任何解读。 */
+  /* 更早的内容：点「查看更早微浪」后逐条追加到时间线下方，按倒序排列，
+     混入若干普通营业 / 生活 / 粉丝互动，关键「爱你」只是一条，不单独突出。 */
   idolOld: [
-    { id:'ipD', time:'2024-03-17 00:17', from:'iPhone 15 Pro',
+    { id:'ipD', time:'2024-03-17 00:17', from:'星环 15 Pro',
       text:'爱你。',
       cms:[['糖渍小星球','等一下，今天又不是 520，怎么突然这么爱我们？'],
            ['阿枝不吃葱','哥你今天怪怪的（但很受用）'],
            ['深夜emo专业户','这条我截图了，先存着'],
            ['今天也要早睡','就两个字？'],
-           ['小岛汽水','晚安，我们也是']],
-      reposts:'2.3万', comments:'9874', likes:'21.6万' }
+           ['小岛汽水','晚安，我们也是'],
+           ['小树苗围挡','小树苗会一直支持你']],
+      reposts:'2.3万', comments:'9874', likes:'21.6万' },
+    { id:'ipE', time:'2024-01-02 19:40', from:'星环 15 Pro',
+      text:'今年第一场雪。排练室窗户上全是水雾，写了一个名字又擦掉了。',
+      cms:[['一颗薄荷糖','新年快乐呀'],
+           ['青柠汽水','这种小浪漫我喜欢'],
+           ['不打烊的灯','雪天路滑，注意安全']],
+      reposts:'1.1万', comments:'3021', likes:'6.7万' },
+    { id:'ipF', time:'2023-11-09 21:05', from:'星环 15 Pro',
+      text:'今天生日。谢谢所有人的礼物，明年想多写几首自己的歌。',
+      cms:[['舟舟今天营业了吗','生日快乐！'],
+           ['小周同学','又长大一岁啦'],
+           ['阿枝不吃葱','许了什么愿'],
+           ['小树苗本苗','小树苗陪你又一年']],
+      reposts:'3.4万', comments:'1.2万', likes:'15.1万' },
+    { id:'ipG', time:'2023-08-21 18:30', from:'星环 15 Pro',
+      text:'排练到一半停电了，大家点着手机闪光灯把这首歌唱完了。',
+      cms:[['夜行动物','名场面'],
+           ['一颗薄荷糖','那晚我也去了'],
+           ['今天吃什么','氛围感拉满']],
+      reposts:'9800', comments:'2210', likes:'5.2万' },
+    { id:'ipH', time:'2023-05-30 12:14', from:'星环 15 Pro',
+      text:'机场偶遇一群来接机的，吓了一跳。下次别堵通道啦，注意安全。',
+      cms:[['小岛汽水','哈哈哈好好好'],
+           ['青柠汽水','收到，注意秩序'],
+           ['不打烊的灯','一路平安']],
+      reposts:'7200', comments:'1503', likes:'4.1万' }
   ]
 };
 
 /* =====================================================================
-   1. 微博（偶像）
+   1. 微浪（偶像）
    ===================================================================== */
 function wbIdolView(){
   const w = document.createElement('div');
@@ -2602,6 +3015,7 @@ function wbIdolView(){
   else if(v==='wbresult'){ w.innerHTML = wbSearchResultHTML(); }
   else if(v==='wbpost'){ w.innerHTML = wbSearchPostHTML(); }
   else if(v==='wbgone'){ w.innerHTML = wbGoneHTML(); }
+  else if(v==='idolold'){ w.innerHTML = wbIdolOldHTML(); }
   else { w.innerHTML = wbHomeHTML(); }
 
   bindNav(w);
@@ -2618,7 +3032,7 @@ function wbIdolView(){
       n.onclick = e=>{ if(e) e.stopPropagation(); enterIdolProfile(); };
     }
   });
-  /* 折叠的旧微博：点「查看更早微博」才展开 */
+  /* 折叠的旧微浪：点「查看更早微浪」才展开 */
   const older = $('[data-older]', w);
   if(older){
     older.onclick = ()=>{
@@ -2627,7 +3041,7 @@ function wbIdolView(){
       if(box){
         box.innerHTML = WB.idolOld.map(x=>postNode({
           postId:x.id, name:CFG.people.idol.name, verified:'vip',
-          avatarHTML:avaColor('舟',44,true,'#3c4251','#e8e8f0'),
+          avatarHTML:avaColor('树',44,true,'#3c4251','#e8e8f0'),
           time:x.time, from:x.from, text:x.text, cms:x.cms,
           reposts:x.reposts, comments:x.comments, likes:x.likes
         })).join('');
@@ -2635,17 +3049,17 @@ function wbIdolView(){
       older.remove();
     };
   }
-  /* ---------- 微博搜索 ----------
+  /* ---------- 微浪搜索 ----------
      真实感搜索：点击搜索框 → 搜索面板 → 玩家主动粘贴/选择候选 → 再点搜索。
-     搜索旧昵称 → 多条结果（含无关）→ 找到别人 @ 该旧昵称的微博
-     → 点旧账号显示「用户不存在」→ 返回原微博 → 点改名后的账号 → 女方主页。
+     搜索旧昵称 → 多条结果（含无关）→ 找到别人 @ 该旧昵称的微浪
+     → 点旧账号显示「用户不存在」→ 返回原微浪 → 点改名后的账号 → 女方主页。
      任何跳转都必须玩家主动点击，绝不自动完成。 */
   const sbtn = $('[data-wbsearch]', w);
   if(sbtn){
     sbtn.onclick = ()=>{
       openSearchPanel({
         app:'weibo',
-        hint:'搜索微博 / 用户',
+        hint:'搜索微浪 / 用户',
         suggest:[
           { label:CFG.people.idol.name, value:CFG.people.idol.name },   // 无关
           { label:CFG.musicId,          value:CFG.musicId },            // 无关
@@ -2665,19 +3079,36 @@ function wbIdolView(){
       });
     };
   }
-  /* ---------- 搜索结果页：点击别人 @ 旧昵称的那条微博 ---------- */
+  /* ---------- 搜索结果页：点击别人 @ 旧昵称的那条微浪（保留滚动位置）---------- */
   if(v==='wbresult'){
     $$('[data-sritem]', w).forEach(n=>{
       n.style.cursor='pointer';
       n.onclick = ()=>{
+        const sc = $('#wbResScroll', w);
+        if(sc) S.flags.wbResultScroll = sc.scrollTop;
+        save();
         if(!S.flags.wbOldPostRead) push('wbpost');
       };
     });
+    /* 从微浪详情 / 用户不存在页返回时，恢复到原搜索结果位置 */
+    requestAnimationFrame(()=>{
+      const sc = $('#wbResScroll', w);
+      if(sc && S.flags.wbResultScroll) sc.scrollTop = S.flags.wbResultScroll;
+    });
     bindCopyable(w);
+    /* 【v5.2】搜索结果页本身不弹任何剧情。只有玩家点开那条微浪、
+       真正看到评论里的 @旧昵称 之后，才会在详情页触发。 */
   }
-  /* ---------- 那条微博的详情 / 评论区 ---------- */
+  /* ---------- 那条微浪的详情 / 评论区 ---------- */
   if(v==='wbpost'){
     S.flags.wbOldPostRead = true; save();
+    /* 【v5.2】完成条件：玩家真的看到了被 @ 的旧昵称（它在正文里渲染出来） */
+    storyTip('wbResult', {
+      title:'这条微浪有点奇怪',
+      thinking:'她不是直接发出来的，而是别人突然 @ 了她以前的名字。<br>而且这个时间，刚好就在她后来改名之前。',
+      hint:'点一下这个旧昵称，看看这个账号现在还在不在。',
+      ok:'点进去看看'
+    });
     /* 点击被 @ 的旧账号 → 「用户不存在」页（不解锁任何证据） */
     $$('[data-wbold]', w).forEach(n=>{
       n.style.cursor='pointer';
@@ -2693,6 +3124,8 @@ function wbIdolView(){
       n.onclick = e=>{
         e.stopPropagation();
         if(S.flags.wbOldAcctSeen){
+          if(!S.evidence.girlWB) gain('girlWB');
+          S.flags.girlWBFound = true;
           S.flags.weiboSearchDone = true; save();
           push('girlprofile');
         }else{
@@ -2710,15 +3143,21 @@ function wbIdolView(){
     });
   }
 
+  /* 已发现账号：主页常驻可重复访问，点卡片直接回到女方微浪主页 */
+  const gwbEntry = $('[data-gwbentry]', w);
+  if(gwbEntry){
+    gwbEntry.onclick = ()=>{ go('girlwb'); };
+  }
+
   /* 帖子图片：普通预览，不做任何伏笔提示 */
   bindImages(w, (key)=>{
     openViewer({ src:IMG.get(key), title:'图片预览', caption:'普通内容，不影响主线。' });
   });
 
-  /* 开场引导：只高亮一次站姐那条微博的头像，不写命令句 */
+  /* 开场引导：只高亮一次站姐那条微浪的头像，不写命令句 */
   if(S.stage===0 && S.started && !S.flags.weiboStanSeen && v!=='idol' && v!=='stan' && !S.flags.guideWeibo){
     S.flags.guideWeibo = true; save();
-    requestAnimationFrame(()=> highlight('.post[data-post="f0"] [data-avatar="stanHead"]', '这条微博有点奇怪'));
+    requestAnimationFrame(()=> highlight('.post[data-post="f0"] [data-avatar="stanHead"]', '这条微浪有点奇怪'));
   }
   return w;
 }
@@ -2737,8 +3176,8 @@ function enterIdolProfile(){
   }
 }
 
-/* 站姐主页 —— 独立页面（进入时清空，只剩一条微博 + 粉丝留言）
-   退出后弹出玩家内心疑问：为什么突然清空微博？ */
+/* 站姐主页 —— 独立页面（进入时清空，只剩一条微浪 + 粉丝留言）
+   退出后弹出玩家内心疑问：为什么突然清空微浪？ */
 function openStanProfile(){
   const first = !S.flags.weiboStanSeen;
   S.flags.weiboStanSeen = true;
@@ -2749,8 +3188,8 @@ function openStanProfile(){
     setTimeout(()=>{
       showModal(`
         <div style="font-size:13.4px;line-height:1.8;color:#4a4a53">
-          我关注了这个站姐几年，她每个行程都跟，是沈亦舟最大的几个站姐之一。<br><br>
-          为什么会突然清空微博？
+          我关注了这个站姐几年，她每个行程都跟，是沈嘉树最大的几个站姐之一。<br><br>
+          为什么会突然清空微浪？
         </div>`, {
         title:'星河不落',
         actions:[{ label:'退出主页', onClick:()=>{ closeModal(); pop(); render(); if(S.stage===0) toast('她经营了六年，说删就全删了。'); } }]
@@ -2785,19 +3224,19 @@ function stanProfileHTML(){
           </div>
         </div>
         <div class="wb-stats">
-          <div><b>1</b>微博</div><div><b>${esc(CFG.fans.stan)}</b>粉丝</div><div><b>0</b>关注</div>
+          <div><b>1</b>微浪</div><div><b>${esc(CFG.fans.stan)}</b>粉丝</div><div><b>0</b>关注</div>
         </div>
       </div>
       <div style="background:#fff;border-bottom:1px solid var(--line);padding:15px">
         <div style="font-size:14.6px;line-height:1.72;color:#33333c">
           此账号从今天起清空，今后不再更新。<br>谢谢大家这么多年。
         </div>
-        <div style="font-size:11.8px;color:#b0b0bc;margin-top:10px">2026-09-29 21:36 · 来自 iPhone · 评论区已关闭</div>
+        <div style="font-size:11.8px;color:#b0b0bc;margin-top:10px">2026-09-29 21:36 · 来自 星环手机 · 评论区已关闭</div>
         <div style="display:flex;gap:20px;font-size:12.4px;color:#9a9aa6;margin-top:11px;padding-top:10px;border-top:1px solid #f2f2f6">
           <span>↻ ${esc(CFG.fans.stan)}</span><span>💬 评论已关闭</span><span>♡ 2.1万</span>
         </div>
       </div>
-      <div class="sect-label">粉丝留言 · 来自转发与超话</div>
+      <div class="sect-label">粉丝留言 · 来自转发与应援圈</div>
       ${fans.map(f=>`
         <div class="floor">
           ${avaColor(f.n.slice(0,1),40,false,'#e4e4ea','#9a9aa6')}
@@ -2816,25 +3255,25 @@ function stanProfileHTML(){
 }
 
 /* =====================================================================
-   微波首页 & 偶像主页
+   微浪首页 & 偶像主页
    ===================================================================== */
 function wbHomeHTML(){
   const stanPost = {
     postId:'f0', name:CFG.people.stan.name, avatarHTML:avaColor('星',44,true,'#e0c9d8','#a37a97'),
-    avatarId:'stanHead', time:'2026-09-29 21:36', from:'iPhone',
+    avatarId:'stanHead', time:'2026-09-29 21:36', from:'星环手机',
     text:'此账号从今天起清空，今后不再更新。<br>谢谢大家这么多年。<br><span style="color:#a3a3af;font-size:13px">（评论区已关闭）</span>',
     comments:'已关闭', likes:'2.1万', reposts:CFG.fans.stan
   };
   const idolPost = {
     postId:'fp', name:CFG.people.idol.name, verified:'vip',
-    avatarHTML:avaColor('舟',44,true,'#3c4251','#e8e8f0'), avatarId:'idolHead',
-    time:'2026-09-29 20:31', from:'iPhone 15 Pro',
-    text:'最近单曲循环这首，副歌部分很上头。睡前的朋友可以试试。<span class="tag">#深夜歌单#</span>',
+    avatarHTML:avaColor('树',44,true,'#3c4251','#e8e8f0'), avatarId:'idolHead',
+    time:'2026-09-29 20:31', from:'星环 15 Pro',
+    text:'最近单曲循环《晚风经过》，副歌部分很上头。睡前的朋友可以试试。<span class="tag">#深夜歌单#</span>',
     cms:[['今天也要早睡','你不是说最近要戒熬夜吗'],
          ['舟舟今天营业了吗','已加入歌单'],
          ['小岛汽水','副歌真的很洗脑'],
          ['不吃香菜','哥最近怎么总在深夜发歌']],
-    reply:['沈亦舟','努力中，争取早点睡。'],
+    reply:['沈嘉树','努力中，争取早点睡。'],
     reposts:'2.1万', comments:'4862', likes:'12.4万'
   };
   return `
@@ -2843,13 +3282,22 @@ function wbHomeHTML(){
         ${avaColor('我',34,false,'#e8e8ee','#8b8b96')}
         <div class="pf-search ${S.flags.weiboSearchReady?'ready':''}" data-wbsearch="1" style="margin-left:4px">${
           S.flags.weiboSearchDone ? `🔍 ${esc(S.flags.wbSearchMiss||'打烊前的月亮')}`
-          : (S.flags.weiboSearchReady ? '🔍 搜索账号 / 微博' : '🔍 大家都在搜：巡演闭幕')}</div>
+          : (S.flags.weiboSearchReady ? '🔍 搜索账号 / 微浪' : '🔍 大家都在搜：巡演闭幕')}</div>
       </div>
       <div class="bbs-tabs" style="padding-left:2px;border-bottom:none;margin-top:9px">
         <span class="on" style="color:#1d1d24;font-weight:700;border-color:#f5a623">关注</span>
         <span>推荐</span><span>热搜</span><span>视频</span>
       </div>`)}
     <div class="scroll">
+      ${S.flags.girlWBFound ? `
+      <div class="gwb-entry" data-gwbentry="1">
+        ${avaColor('月',38,false,'#c8cfe0','#7a849c')}
+        <div class="gwb-entry-m">
+          <div class="gwb-entry-t">打烊前的月亮<span class="gwb-entry-tag">已发现的账号</span></div>
+          <div class="gwb-entry-s">点这里回到她的微浪主页</div>
+        </div>
+        <div class="gwb-entry-go">›</div>
+      </div>` : ''}
       ${postNode(stanPost)}
       ${postNode(idolPost)}
       ${WB.filler.map(postNode).join('')}
@@ -2859,28 +3307,28 @@ function wbHomeHTML(){
 function idolProfileHTML(){
   const posts = WB.idolPosts.map(x=>postNode({
     postId:x.id, name:CFG.people.idol.name, verified:'vip',
-    avatarHTML:avaColor('舟',44,false,'#3c4251','#e8e8f0'),
+    avatarHTML:avaColor('树',44,false,'#3c4251','#e8e8f0'),
     time:x.time, from:x.from, text:x.text, cms:x.cms, reply:x.reply,
     reposts:x.reposts, comments:x.comments, likes:x.likes
   })).join('');
 
   const oldPosts = (S.flags.idolOldOpen && WB.idolOld) ? WB.idolOld.map(x=>postNode({
     postId:x.id, name:CFG.people.idol.name, verified:'vip',
-    avatarHTML:avaColor('舟',44,false,'#3c4251','#e8e8f0'),
+    avatarHTML:avaColor('树',44,false,'#3c4251','#e8e8f0'),
     time:x.time, from:x.from, text:x.text, cms:x.cms,
     reposts:x.reposts, comments:x.comments, likes:x.likes
   })).join('') : '';
 
   const olderBar = S.flags.idolOldOpen
     ? ''
-    : `<div class="older-bar" data-older="1">查看更早微博 ▾</div>`;
+    : `<div class="older-bar" data-older="1">查看更早微浪 ▾</div>`;
 
   return `
     ${navbar('个人主页', {right:homeKey()})}
     <div class="scroll">
       <div class="wb-profile-head">
         <div class="wb-ph-top">
-          ${avaColor('舟',62,false,'#3c4251','#e8e8f0')}
+          ${avaColor('树',62,false,'#3c4251','#e8e8f0')}
           <div style="flex:1">
             <div class="wb-ph-name">${esc(CFG.people.idol.name)}<span class="vip">VIP</span></div>
             <div class="wb-ph-desc">${esc(CFG.people.idol.role)}<br>舞台 / 音乐 / 电影 ｜ 工作事宜请联系工作室</div>
@@ -2891,9 +3339,9 @@ function idolProfileHTML(){
           <span>📍 IP属地：${esc(CFG.people.idol.ip)}</span>
           <span>💼 签约：星屿文化</span>
         </div>
-        <div class="wb-ph-code">微波id：${CFG.people.idol.bd}_yizhou<br>会员等级 Lv.7 · 关注 128 · 粉丝 894.6万</div>
+        <div class="wb-ph-code">微浪id：${CFG.people.idol.bd}_jiashu<br>会员等级 Lv.7 · 关注 128 · 粉丝 894.6万</div>
         <div class="wb-stats">
-          <div><b>1263</b>微博</div><div><b>128</b>关注</div><div><b>894.6万</b>粉丝</div>
+          <div><b>1263</b>微浪</div><div><b>128</b>关注</div><div><b>894.6万</b>粉丝</div>
         </div>
         <div class="wb-ph-actions">
           <button class="b pri followed">已关注</button>
@@ -2901,16 +3349,16 @@ function idolProfileHTML(){
         </div>
       </div>
       <div style="height:20px;background:#f5f5f7"></div>
-      <div id="olderBox">${oldPosts}</div>
-      ${olderBar}
       ${posts}
+      ${olderBar}
+      <div id="olderBox">${oldPosts}</div>
     </div>`;
 }
 
 /* =====================================================================
-   1b. 微博搜索发现链（v5 文档 5.4 节）
-   —— 搜索旧昵称 → 多条结果（含无关）→ 别人 @ 旧昵称的微博
-      → 点旧账号显示「用户不存在」→ 返回原微博 → 点改名后账号 → 女方主页
+   1b. 微浪搜索发现链（v5 文档 5.4 节）
+   —— 搜索旧昵称 → 多条结果（含无关）→ 别人 @ 旧昵称的微浪
+      → 点旧账号显示「用户不存在」→ 返回原微浪 → 点改名后账号 → 女方主页
    ===================================================================== */
 /* 判断搜索词是否属于「可以进入发现链」的关键词。
    旧昵称（汽水味的月亮）与改名后的现昵称（打烊前的月亮）都成立，
@@ -2920,45 +3368,48 @@ function wbSearchHit(q){
   return keys.some(k=> k === q);
 }
 
-/* 搜索结果页：5 条结果，只有第 3 条是真线索，其余都是无关内容 */
+/* 搜索结果页：区分 用户 / 微浪 / 话题，相关微浪稳定出现在第 3 条，
+   正文直接带 @旧昵称，让玩家能辨认但不剧透 */
 function wbSearchResultHTML(){
   const q = S.flags.wbSearchMiss || '';
   const hit = wbSearchHit(q);
+  /* 结构：先若干「用户」卡片（头像/昵称/用户类型/关注粉丝），
+     其后混排普通微浪、无关用户与话题。每条都有明确的类型标识。 */
   const rows = hit ? [
-    { t:'@汽水味儿的汽水', s:'用户 · 关注 128 · 粉丝 46', ico:'用', bg:'#fdf3e4', fg:'#c98a3e' },
-    { t:'#夏天的汽水味#', s:'话题 · 3.2 万讨论', ico:'#', bg:'#eef0fb', fg:'#5b6ee1' },
-    { t:'@橘子汽水铺', s:'今天路过老街那家汽水铺，还是小时候的味道。', ico:'微', bg:'#eaf6ec', fg:'#5d9663', post:true },
-    { t:'汽水味的小月亮', s:'用户 · 关注 12 · 粉丝 3', ico:'用', bg:'#fdecec', fg:'#e05252' },
-    { t:'@月亮观察日记', s:'用户 · 关注 302 · 粉丝 1.1 万', ico:'用', bg:'#f2f0fb', fg:'#7a6ee1' }
+    { type:'user',  t:'@汽水味儿的小月亮', s:'用户 · 关注 12 · 粉丝 3', ico:'用', bg:'#fdecec', fg:'#e05252' },
+    { type:'user',  t:'@汽水味的小月亮', s:'用户 · 关注 9 · 粉丝 1', ico:'用', bg:'#fdecec', fg:'#e05252' },
+    { type:'post',  t:'@橘子汽水铺', s:'翻到两年前的一条旧动态，突然想起一个人。 @'+esc(CFG.girlOldNick)+' 还在写字吗？', time:'2024-06-08', ico:'微', bg:'#eaf6ec', fg:'#5d9663', key:'wp1' },
+    { type:'topic', t:'#夏天的汽水味#', s:'话题 · 3.2 万讨论', ico:'#', bg:'#eef0fb', fg:'#5b6ee1' },
+    { type:'post',  t:'@月亮观察日记', s:'有些人换个名字就找不到了，但以前写过的东西还在。', time:'2024-05-30', ico:'微', bg:'#eaf6ec', fg:'#5d9663' }
   ] : [
-    { t:'@巡演闭幕现场', s:'话题 · 8621 万阅读', ico:'#', bg:'#fdf3e4', fg:'#c98a3e' },
-    { t:'@沈亦舟全球粉丝后援会', s:'用户 · 关注 86 · 粉丝 41.2 万', ico:'用', bg:'#eef0fb', fg:'#5b6ee1' },
-    { t:'@小岛汽水', s:'刚看了闭幕场，嗓子喊哑了。', ico:'微', bg:'#eaf6ec', fg:'#5d9663' },
-    { t:'@今天也要早睡', s:'用户 · 关注 240 · 粉丝 88', ico:'用', bg:'#fdecec', fg:'#e05252' }
+    { type:'user',  t:'@沈嘉树全球粉丝后援会', s:'用户 · 关注 86 · 粉丝 41.2 万', ico:'用', bg:'#eef0fb', fg:'#5b6ee1' },
+    { type:'user',  t:'@今天也要早睡', s:'用户 · 关注 240 · 粉丝 88', ico:'用', bg:'#fdecec', fg:'#e05252' },
+    { type:'topic', t:'#沈嘉树巡演闭幕#', s:'话题 · 8621 万阅读', ico:'#', bg:'#fdf3e4', fg:'#c98a3e' },
+    { type:'post',  t:'@小岛汽水', s:'刚看了闭幕场，嗓子喊哑了。', time:'2天前', ico:'微', bg:'#eaf6ec', fg:'#5d9663' }
   ];
   return `${navbar('搜索结果', {right:homeKey()})}
-    <div class="scroll">${searchResultNode({
-      q, like:'用户 / 话题 / 微博',
+    <div class="scroll" id="wbResScroll">${searchResultNode({
+      q, like:'用户 · 微浪 · 话题',
       items: rows.map(r=>({
-        title:r.t, sub:r.s, ico:r.ico, bg:r.bg, fg:r.fg,
-        key: r.post ? 'wp1' : ''
+        title:r.t, sub:r.s, type:r.type, time:r.time, ico:r.ico, bg:r.bg, fg:r.fg,
+        key: r.key || ''
       })),
       note: hit
-        ? '以下结果按相关度排序。往下翻，看看别人是怎么提到这个名字的。'
-        : '没有找到与该关键词完全匹配的用户。换个关键词试试。'
+        ? '结果按综合排序。其中有一条普通用户的微浪，正文 @ 了这个名字——点进去看看上下文。'
+        : '没有找到与该关键词完全匹配的用户。换个关键词，或用刚才记下的那个旧昵称试试。'
     })}</div>`;
 }
 
-/* 那条微博的详情 + 评论区：玩家在这里看到别人 @ 的旧账号，
+/* 那条微浪的详情 + 评论区：玩家在这里看到别人 @ 的旧账号，
    以及一个已经改了名的账号在评论区的回复 */
 function wbSearchPostHTML(){
-  return `${navbar('微博正文', {right:homeKey()})}
+  return `${navbar('微浪正文', {right:homeKey()})}
     <div class="scroll" style="background:#fff">
       <div class="post" style="border-bottom:none">
         ${avaColor('橘',44,false,'#e6f0e4','#6b9a68')}
         <div class="p-main">
           <div class="p-name">橘子汽水铺</div>
-          <div class="p-time">2024-06-08 21:04<span>来自 iPhone 13</span></div>
+          <div class="p-time">2024-06-08 21:04<span>来自 星环 13</span></div>
           <div class="p-text">
             翻到两年前的一条旧动态，突然想起一个人。
             <span class="tag">@${esc(CFG.girlOldNick)}</span>
@@ -3049,13 +3500,29 @@ function wbGoneHTML(){
           可能已更改昵称，也可能已经注销。
         </div>
         <div style="font-size:12.4px;color:#b0b0bc;margin-top:16px">
-          昵称可以被改掉，但别人 @ 过她的那条微博还在。
+          昵称可以被改掉，但别人 @ 过她的那条微浪还在。
         </div>
       </div>
       <div style="padding:6px 20px 30px">
-        <button class="btn" data-wbback="1">返回那条微博</button>
+        <button class="btn" data-wbback="1">返回那条微浪</button>
       </div>
       <div style="height:20px"></div>
+    </div>`;
+}
+/* 偶像对应微浪（2024-03-17「爱你」）详情：
+   由女方主页纪念日弹窗的「查看对应微浪」进入，返回即回到女方主页 */
+function wbIdolOldHTML(){
+  const x = WB.idolOld.find(p=>p.id==='ipD') || WB.idolOld[0];
+  return `${navbar('微浪正文', {right:homeKey()})}
+    <div class="scroll" style="background:#fff">
+      ${postNode({ postId:x.id, name:CFG.people.idol.name, verified:'vip',
+        avatarHTML:avaColor('树',44,true,'#3c4251','#e8e8f0'),
+        time:x.time, from:x.from, text:x.text, cms:x.cms,
+        reposts:x.reposts, comments:x.comments, likes:x.likes })}
+      <div style="padding:16px 15px 30px;background:#fff;font-size:12.4px;color:#b0b0bc;line-height:1.85">
+        同一天，她在另一处写：<b>第三个纪念日。</b><br>
+        回到主页，往下翻还能看到更多。
+      </div>
     </div>`;
 }
 
@@ -3098,7 +3565,7 @@ function wxChatHTML(){
   /* 玩家固定回复 */
   if(S.flags.wxReplied){
     base.push(wxBubble('me','看到了，怎么突然这样？'));
-    base.push(wxBubble('them','我也不知道。昨晚刷微博的时候还看到她发了一条动态，感觉怪怪的。'));
+    base.push(wxBubble('them','我也不知道。昨晚刷微浪的时候还看到她发了一条动态，感觉怪怪的。'));
     base.push(wxBubble('them','我点进去的时候还在，刷新一下就没了。幸好我手快截了图。'));
     if(S.flags.wxShotSent){
       base.push(wxBubble('them','<div class="shotimg"><img src="'+IMG.get('screenshot')+'" style="width:100%;display:block"></div>'));
@@ -3143,12 +3610,13 @@ function renderWxReplies(w){
     return;
   }
 
-  /* 第三步：对话结束 */
+  /* 第三步：对话结束 —— 退出闺蜜聊天时，弹出一次玩法说明 */
   box.innerHTML = `<div class="hintline">对话已结束</div>
     <button class="opt" id="wxDone">我去别的地方看看</button>`;
   $('#wxDone', w).onclick = ()=>{
     if(S.stage < 2) unlockStage(2);
     save();
+    if(!S.flags.guideTipShown){ showGuideTip(); return; }
     showModal(`
       <div style="font-size:13.4px;line-height:1.8;color:#4a4a53">
         你决定先从公开讨论里找找线索。
@@ -3161,10 +3629,29 @@ function renderWxReplies(w){
     });
   };
 }
+/* 开场玩法说明：只弹一次，已看状态写入存档；新存档会再次显示。
+   不剧透女方身份、恋情结论或任何具体线索。 */
+function showGuideTip(){
+  S.flags.guideTipShown = true; save();
+  showModal(`
+    <div style="font-size:13.4px;line-height:1.82;color:#4a4a53">
+      你将以一名关注事件的粉丝视角，浏览不同社交平台，寻找与站姐关站有关的蛛丝马迹。<br><br>
+      留意动态、评论和图片中的信息，必要时记下账号或关键词，在其他平台搜索；<br>
+      把重要图片保存下来，并在记录中整理线索。<br><br>
+      随着证据逐步收集，事件背后的情况也会一点点浮现。
+    </div>`, {
+    title:'玩法说明',
+    actions:[{ label:'开始调查', onClick:()=>{
+      closeModal();
+      S.flags.guideWeibo = true;
+      NAV.stack=[]; go('desktop'); save();
+    } }]
+  });
+}
 function rerenderWx(){
   const vp = $('#viewport');
   if(!vp) return;
-  /* 保留滚动位置感：直接重绘当前微信页 */
+  /* 保留滚动位置感：直接重绘当前微讯页 */
   const w = APP_RENDER.wechat();
   vp.innerHTML=''; vp.appendChild(w);
 }
@@ -3194,27 +3681,27 @@ function openShotViewer(){
    3. 吃瓜小组（论坛）
    ===================================================================== */
 const BBS_FEED = [
-  { id:'p1', t:'这届选秀的票数是不是有点离谱了', r:'1.2万', c:'843', time:'2026-09-30 10:22',
-    body:'刚才刷新了一下，某个选手一小时涨了三十万票，这个曲线的斜率真的正常吗？有没有懂数据的老哥说说。',
-    cms:[['夜行动物','粉丝体量和投票机制不匹配，确实有点怪'],['糖渍小星球','每年都这样，习惯就好'],['路过的瓜','蹲一个数据贴']] },
-  { id:'p2', t:'【求助】追星十年突然想退坑，怎么说服自己', r:'4261', c:'612', time:'2026-09-30 09:41',
+  { id:'p1', author:'追星省钱日记', t:'这届选秀的票数是不是有点离谱了', r:'1.2万', c:'843', time:'2026-09-30 10:22',
+    body:'刚才刷新了一下，某个选手一小时涨了三十万票，这个曲线的斜率真的正常吗？有没有懂数据的朋友看看。',
+    cms:[['夜行动物','粉丝体量和投票机制不匹配，确实有点怪'],['深海里的鱼','别分析了，资本的事你分析不明白'],['半糖去冰','蹲一个数据贴，我也觉得不对劲']] },
+  { id:'p2', author:'今天也是困困的', t:'【求助】追星十年突然想退坑，怎么说服自己', r:'4261', c:'612', time:'2026-09-30 09:41',
     body:'从初中追到现在，工作之后越来越没时间。不是不喜欢了，只是觉得该把精力放在别的地方，可是真要走又舍不得。',
-    cms:[['阿枝不吃葱','不用逼自己走，慢慢淡下来就行'],['一颗薄荷糖','留一个让自己开心的部分就够了'],['今天吃什么','先别清空相册，过段时间再看']] },
-  { id:'p3', t:'最近有什么好看的悬疑剧推荐吗', r:'892', c:'134', time:'2026-09-30 08:15',
+    cms:[['阿枝不吃葱','不用逼自己走，慢慢淡下来就行'],['月亮邮差','留一个让自己开心的部分就够了'],['晚风收集者','我退了又回，回来看开了就当背景音']] },
+  { id:'p3', author:'小周同学', t:'最近有什么好看的悬疑剧推荐吗', r:'892', c:'134', time:'2026-09-30 08:15',
     body:'最近剧荒，想看那种节奏慢一点、靠氛围的。不要太烧脑的。',
-    cms:[['小岛汽水','《海边的克莱因》其实是文艺向，但后劲大'],['小周同学','推荐一部老片，看你还没看过'],['夜行动物','《星期日不营业》也不错，很安静']] },
-  { id:'target', t:'沈亦舟的大站姐突然宣布关站了，有人知道怎么回事吗？', r:'3.8万', c:'2641', time:'2026-09-29 08:12', hot:true, target:true,
-    body:'早上刷到星河不落的关站微博，愣了好一会儿。她做这个站六年了，之前一直有更新，最近也还在跟行程。今天突然把内容清空，评论也关了。不是说站姐一定要解释，但这个变化太突然了，有人知道发生什么了吗？' },
-  { id:'p5', t:'说个冷知识：明星的IP属地其实很能说明问题', r:'2864', c:'420', time:'2026-09-29 22:03',
+    cms:[['小岛汽水','《海边的克莱因》其实是文艺向，但后劲大'],['青柠汽水','推荐一部老片，你看还没看过'],['打更的猫','《星期日不营业》也不错，很安静']] },
+  { id:'target', author:'匿名用户', t:'沈嘉树的大站姐突然宣布关站了，有人知道怎么回事吗？', r:'3.8万', c:'2641', time:'2026-09-29 08:12', hot:true, target:true,
+    body:'早上刷到星河不落的关站微浪，愣了好一会儿。她做这个账号六年了，之前一直有更新，最近也还在跟行程。今天突然把内容清空，评论也关了。不是说站姐一定要解释，但这个变化太突然了，有人知道发生什么了吗？' },
+  { id:'p5', author:'路过的风', t:'说个冷知识：明星的IP属地其实很能说明问题', r:'2864', c:'420', time:'2026-09-29 22:03',
     body:'同一个城市出现频率太高，或者某段时间密集在某地，其实能看出不少东西。当然也只是参考，不能当证据。',
-    cms:[['夜行动物','IP属地会受代理影响，别想太多'],['不吃香菜','有些人的IP确实很稳定'],['匿名用户','这也能扒？']] },
-  { id:'p6', t:'求一个不会踩雷的电饭煲品牌', r:'316', c:'88', time:'2026-09-29 20:47',
+    cms:[['深海里的鱼','IP属地会受代理影响，别想太多'],['阿白不白','有些人的IP确实很稳定'],['路过的瓜','这也能扒？吃瓜归吃瓜']] },
+  { id:'p6', author:'厨房废物', t:'求一个不会踩雷的电饭煲品牌', r:'316', c:'88', time:'2026-09-29 20:47',
     body:'预算三百以内，主要煮饭，能煮粥最好。',
-    cms:[['今天吃什么','三百以内随便买，差别不大'],['厨房废物','我用空气炸锅煮过饭，别学我'],['一颗薄荷糖','看内胆涂层，别的都好说']] },
-  { id:'p7', t:'为什么现在演唱会门票越来越贵了', r:'5120', c:'726', time:'2026-09-29 19:12',
+    cms:[['只爱舞台','三百以内随便买，差别不大'],['厨房废物','我用空气炸锅煮过饭，别学我'],['半糖去冰','看内胆涂层，别的都好说']] },
+  { id:'p7', author:'老粉碎碎念', t:'为什么现在演唱会门票越来越贵了', r:'5120', c:'726', time:'2026-09-29 19:12',
     body:'去年还能抢到后台站的位置，今年同样的场次翻了一倍。是场馆租金涨了吗？',
-    cms:[['小岛汽水','黄牛+平台手续费，两头吃'],['追星省钱日记','所以我今年只去了一场'],['路过的瓜','供需关系吧，热门场次就是这样'],['夜行动物','加点城市越来越多，成本也上去了']] },
-  { id:'p8', t:'【讨论】追星这几年，你最舍不得删掉的是什么？', r:'9642', c:'1103', time:'2026-09-29 17:36',
+    cms:[['小岛汽水','黄牛+平台手续费，两头吃'],['老粉碎碎念','所以我今年只去了一场，钱包受不了'],['路过的风','供需关系吧，热门场次就是这样'],['深海里的鱼','加点城市越来越多，成本也上去了']] },
+  { id:'p8', author:'楼主', t:'【讨论】追星这几年，你最舍不得删掉的是什么？', r:'9642', c:'1103', time:'2026-09-29 17:36',
     body:'翻相册的时候突然发现，手机里存得最多的不是自拍，是演唱会票根、散场路上的照片，还有一些当时觉得很普通、现在回头看却记得很清楚的东西。想问问大家，追星这么多年，有没有什么东西一直没舍得删？不一定是照片，也可以是一段录音、一张车票，或者某次很普通的见面。',
     floors:[
       ['一颗薄荷糖','我留着第一次去线下的车票，已经褪色了，但一直没扔。'],
@@ -3223,36 +3710,39 @@ const BBS_FEED = [
       ['路过的瓜','我倒是把很多图删了，后来发现记得的还是那些现场的声音。'],
       ['楼主','原来大家都留着一些看起来没什么用的小东西。']
     ] },
-  { id:'p9', t:'有没有人和我一样，追星之后反而更社恐了', r:'734', c:'215', time:'2026-09-29 15:58',
+  { id:'p9', author:'阿枝不吃葱', t:'有没有人和我一样，追星之后反而更社恐了', r:'734', c:'215', time:'2026-09-29 15:58',
     body:'线下应援聚会去过一次，全程不知道说什么，回来之后更不想参加活动了。',
-    cms:[['阿枝不吃葱','一样，线上交流反而自在'],['今天吃什么','找到一两个聊得来的就够了'],['小周同学','社恐+1，但去了现场又是另一个人']] },
-  { id:'p10', t:'扒了三个小时，终于搞懂那个应援色怎么调的', r:'228', c:'41', time:'2026-09-29 14:20',
+    cms:[['阿枝不吃葱','一样，线上交流反而自在'],['青柠汽水','找到一两个聊得来的就够了'],['今天也是困困的','社恐+1，但去了现场又是另一个人']] },
+  { id:'p10', author:'糖渍小星球', t:'扒了三个小时，终于搞懂那个应援色怎么调的', r:'228', c:'41', time:'2026-09-29 14:20',
     body:'总结：不是纯色，加了一点灰和一点暖，具体比例放评论区了。',
-    cms:[['小岛汽水','技术流，学习了'],['一颗薄荷糖','存图了'],['糖渍小星球','色卡可以共享一下吗']] },
-  { id:'p11', t:'今年最好笑的事：我把演唱会门票弄丢了', r:'1893', c:'367', time:'2026-09-29 12:05',
+    cms:[['小岛汽水','技术流，学习了'],['月亮邮差','存图了，下次应援用得上'],['糖渍小星球','色卡可以共享一下吗']] },
+  { id:'p11', author:'路过的瓜', t:'今年最好笑的事：我把演唱会门票弄丢了', r:'1893', c:'367', time:'2026-09-29 12:05',
     body:'进场前十分钟发现票不在包里，最后是检票口小哥帮我调的电子票。感谢他。',
-    cms:[['路过的瓜','心脏骤停现场'],['追星省钱日记','下次放手机壳里'],['夜行动物','替你紧张了三秒']] },
-  { id:'p12', t:'现在还有人用MP3听歌吗', r:'142', c:'56', time:'2026-09-29 10:31',
+    cms:[['路过的瓜','心脏骤停现场'],['老粉碎碎念','下次放手机壳里，血的教训'],['打更的猫','替你紧张了三秒']] },
+  { id:'p12', author:'今天吃什么', t:'现在还有人用MP3听歌吗', r:'142', c:'56', time:'2026-09-29 10:31',
     body:'翻出来一个旧的，充上电居然还能用。就是传歌有点麻烦。',
-    cms:[['小周同学','我还在用，通勤神器'],['一颗薄荷糖','音质真的比手机好'],['小岛汽水','主要是没有通知打扰']] }
+    cms:[['小周同学','我还在用，通勤神器'],['深海里的鱼','音质真的比手机好'],['小岛汽水','主要是没有通知打扰']] }
 ];
 
-/* 目标帖 15 楼（多观点、自然讨论） */
+/* 目标帖楼层（v5.2 文档第 3.2 节）
+   —— 「不吃香菜谢谢」在本帖只出现一次：5 楼「嫂子被站姐发现了呗。」
+      之后不再回复；禁止写"再没回复""最后在线时间不可见""账号消失"等系统说明，
+      也不在评论区解释他为什么不回复。其他人可以正常质疑、讨论。 */
 const BBS_FLOORS = [
   { n:'匿名用户', floor:'1楼', text:'我早上点进去的时候还看到她主页有很多图，过了一会儿再刷新就只剩那条了。' },
   { n:'夜行动物', floor:'2楼', text:'她上个月还在整理巡演图，感觉不像是早就计划好的。' },
   { n:'匿名用户', floor:'3楼', text:'也可能是现实生活有事吧。追星这么多年，突然不想做了也正常。' },
-  { n:'今天也是困困的', floor:'4楼', text:'她之前不是跟私生吵过吗？会不会又被骚扰了。' },
+  { n:'今天也是困困的', floor:'4楼', text:'她之前不是被人骚扰过吗？会不会又遇到类似的事了。' },
   { n:'不吃香菜谢谢', floor:'5楼', text:'嫂子被站姐发现了呗。', doubt:true },
-  { n:'糖渍小星球', floor:'6楼', text:'又来了，张口就造谣？有证据吗？' },
+  { n:'糖渍小星球', floor:'6楼', text:'等一下，这话有依据吗？我还是希望先看到点实在的东西。' },
   { n:'阿枝不吃葱', floor:'7楼', text:'每次有人关站都要往恋爱上扯，能不能别把所有事都往这方面想。' },
   { n:'今天也是困困的', floor:'8楼', text:'不吃香菜谢谢，你说清楚啊，怎么发现的？' },
   { n:'匿名用户', floor:'9楼', text:'楼上别吵了，站姐本人都没说，咱们猜来猜去也没用。' },
-  { n:'夜行动物', floor:'10楼', text:'但她这次确实有点突然。前两天还在超话发过返图。' },
-  { n:'糖渍小星球', floor:'11楼', text:'可能就是累了吧，六年也够久了。' },
-  { n:'不吃香菜谢谢', floor:'12楼', text:'（无回复）', gone:true },
+  { n:'夜行动物', floor:'10楼', text:'但她这次确实有点突然。前两天还在应援圈发过返图。' },
+  { n:'糖渍小星球', floor:'11楼', text:'演得挺像，可惜沈嘉树出了名的事业型偶像一直在走上升路，这种时候应该没空谈恋爱，还是别猜了。' },
+  { n:'只爱舞台', floor:'12楼', text:'就是，六年陪跑都过来了，现在正是最关键的两年，还是换个说法吧。' },
   { n:'匿名用户', floor:'13楼', text:'有没有人记得她之前发过一条"有些事知道了也没用"？' },
-  { n:'阿枝不吃葱', floor:'14楼', text:'我只希望她别是被私生骚扰了，别再传没根据的话。' },
+  { n:'阿枝不吃葱', floor:'14楼', text:'我只希望她别是真的遇到了麻烦，别再传没根据的话。' },
   { n:'楼主', floor:'15楼', text:'先不猜了。如果她愿意说，自然会说。', op:true }
 ];
 
@@ -3267,13 +3757,30 @@ function bbsView(){
   bindNav(w);
 
   if(v==='thread'){
+    /* 目标帖评论区里「嫂子被站姐发现了呗」即为该证据，打开即视为已读到 */
+    if(!S.evidence.bbsPost) gain('bbsPost');
+    /* 【v5.2】剧情弹窗必须由"完成动作"触发：
+       玩家点了那条关键回复的头像、真正确认了这个人是谁，才弹。 */
     const dv = $('[data-avatar="doubtHead"]', w);
     if(dv){
       dv.style.cursor='pointer';
-      dv.onclick = ()=>{ S.flags.bbsTargetRead = true; S.flags.bbsDoubtSeen = true; if(S.stage<3) unlockStage(3); save(); push('doubt'); };
+      dv.onclick = ()=>{
+        S.flags.bbsTargetRead = true; S.flags.bbsDoubtSeen = true;
+        if(S.stage<3) unlockStage(3);
+        save();
+        push('doubt');
+        storyTip('bbsThread', {
+          title:'这条微浪有点奇怪',
+          thinking:'这个人说得太肯定了。她说得太确定了，而且不像是临时起意。<br>顺着这个账号往回看，说不定能找到她为什么会知道这些。',
+          hint:'看看她以前发过什么。',
+          ok:'看看她的主页'
+        });
+      };
     }
   }
   if(v==='doubt'){
+    /* 爆料人主页里那条「有嫂子了」的旧帖即为该证据，打开即视为已读到 */
+    if(!S.evidence.bbsOld) gain('bbsOld');
     /* 复制动作由全局 onClipboardChange 统一处理，这里无需额外绑定 */
     const mp = $('[data-music-clue]', w);
     if(mp) mp.onclick = ()=>{
@@ -3282,6 +3789,35 @@ function bbsView(){
       save();
       toast('这串数字，像是音乐平台里的用户编号。');
     };
+    /* 【v5.2】必须先真正往下浏览到那条带编号的历史帖子，才弹。
+       用滚动 / 点击该帖任一位置都会标记为"已浏览到"。 */
+    const cluePost = $('[data-clue-post]', w);
+    const markClue = ()=>{
+      if(S.flags.bbsCluePostSeen) return;
+      S.flags.bbsCluePostSeen = true; save();
+      storyTip('doubtProfile', {
+        title:'翻到了这里',
+        thinking:'原来她以前是真的喜欢过他。可后来，她的语气越来越不一样……<br>中间一定发生过什么。',
+        hint:'她留下的那串云乐用户编号，应该就是关键。',
+        ok:'记下编号'
+      });
+    };
+    if(cluePost){
+      cluePost.style.cursor = 'pointer';
+      cluePost.onclick = markClue;
+      /* 真正滚动到该帖位置也算"浏览到" */
+      const sc = $('.scroll', w);
+      const onScroll = ()=>{
+        if(!sc) return;
+        const r = cluePost.getBoundingClientRect();
+        const sr = sc.getBoundingClientRect();
+        if(r.top < sr.bottom - 40 && r.bottom > sr.top){ markClue(); }
+      };
+      if(sc){
+        sc.addEventListener('scroll', onScroll, {passive:true});
+        requestAnimationFrame(onScroll);
+      }
+    }
   }
   if(!v || v==='') {
     /* 每一条帖子都可点击进入详情 */
@@ -3303,18 +3839,24 @@ function curPost(){
   const id = v.startsWith('post:') ? v.slice(5) : '';
   return BBS_FEED.find(x=>x.id===id) || BBS_FEED[0];
 }
-/* 普通帖子详情：正文 + 楼主信息 + 数据 + 若干条自然评论 */
+/* 普通帖子详情：正文 + 楼主信息 + 数据 + 若干条自然评论
+   排版按真实论坛的层级：标题最大最粗，第二行元信息明显缩小变浅。 */
 function bbsPostHTML(p){
   if(!p) p = BBS_FEED[0];
   const floors = p.floors || p.cms || [];
-  const floorLabel = (i)=> (p.floors ? (i+1)+'楼' : (i+1)+'楼');
+  const floorLabel = (i)=> (i+1)+'楼';
   return `
     ${navbar('帖子详情', {right:homeKey()})}
     <div class="scroll">
-      <div style="background:#fff;padding:15px 15px 13px;border-bottom:1px solid var(--line)">
-        <div class="t-title ${p.hot?'hot':''}" style="font-size:16.4px;line-height:1.5">${esc(p.t)}</div>
-        <div class="t-meta" style="margin-top:9px"><span>楼主：匿名用户</span><span>${esc(p.time||'')}</span><span>浏览 ${p.r}</span><span>回复 ${p.c}</span></div>
-        <div style="margin-top:11px;font-size:14px;line-height:1.7;color:#33333c">${esc(p.body||'')}</div>
+      <div class="th-head">
+        <div class="th-title ${p.hot?'hot':''}">${esc(p.t)}</div>
+        <div class="th-meta">
+          <span>楼主：<b>${esc(p.author||'匿名用户')}</b></span>
+          <span>${esc(p.time||'')}</span>
+          <span>浏览 ${p.r}</span>
+          <span>回复 ${p.c}</span>
+        </div>
+        <div class="th-body">${esc(p.body||'')}</div>
       </div>
       <div class="sect-label">全部回复 · 按时间</div>
       ${floors.map((f,i)=>`
@@ -3349,7 +3891,7 @@ function bbsFeedHTML(){
           <div class="t-main">
             <div class="t-title ${x.hot?'hot':''}">${esc(x.t)}</div>
             ${x.body?`<div class="t-body">${esc(x.body)}</div>`:''}
-            <div class="t-meta"><span>匿名用户</span><span>${esc(x.time||'')}</span><span>浏览 ${x.r}</span><span>回复 ${x.c}</span></div>
+            <div class="t-meta"><span>${esc(x.author||'匿名用户')}</span><span>${esc(x.time||'')}</span><span>浏览 ${x.r}</span><span>回复 ${x.c}</span></div>
           </div>
           ${x.hot?'<div class="t-rep hot">热门</div>':'<div class="t-rep">新</div>'}
         </div>`).join('')}
@@ -3359,17 +3901,22 @@ function bbsThreadHTML(){
   return `
     ${navbar('帖子详情', {right:homeKey()})}
     <div class="scroll">
-      <div style="background:#fff;padding:15px 15px 13px;border-bottom:1px solid var(--line)">
-        <div class="t-title hot" style="font-size:16.6px;line-height:1.5">沈亦舟的大站姐突然宣布关站了，有人知道怎么回事吗？</div>
-        <div class="t-meta" style="margin-top:9px"><span>楼主：匿名用户</span><span>2026-09-29 08:12</span><span>浏览 3.8万</span><span>回复 2641</span></div>
-        <div style="margin-top:11px;font-size:14px;line-height:1.65;color:#33333c">
-          早上刷到星河不落的关站微博，愣了好一会儿。她做这个站六年了，之前一直有更新，最近也还在跟行程。<br>
+      <div class="th-head">
+        <div class="th-title hot">那个做了六年的大站突然宣布关站了，有人知道怎么回事吗？</div>
+        <div class="th-meta">
+          <span>楼主：<b>匿名用户</b></span>
+          <span>2026-09-29 08:12</span>
+          <span>浏览 3.8万</span>
+          <span>回复 2641</span>
+        </div>
+        <div class="th-body">
+          早上刷到星河不落的关站微浪，愣了好一会儿。她做这个站六年了，之前一直有更新，最近也还在跟行程。<br>
           今天突然把内容清空，评论也关了。不是说站姐一定要解释，但这个变化太突然了，有人知道发生什么了吗？
         </div>
       </div>
       <div class="sect-label">全部回复 · 按时间</div>
       ${BBS_FLOORS.map(f=>`
-        <div class="floor ${f.doubt?'op':''} ${f.gone?'gone':''}">
+        <div class="floor ${f.doubt?'op':''}">
           <div ${f.doubt?'data-avatar="doubtHead" style="flex:0 0 auto;cursor:pointer;display:inline-flex"':''}>${avaColor(f.n.slice(0,1),40,f.doubt,'#e4e4ea','#9a9aa6')}</div>
           <div class="f-main">
             <div class="f-top">
@@ -3378,17 +3925,52 @@ function bbsThreadHTML(){
               <span style="margin-left:auto">${f.floor}</span>
             </div>
             <div class="f-text">${esc(f.text)}</div>
-            ${f.gone?'<div class="f-foot"><span class="pill">该账号最后在线时间不可见</span></div>':''}
           </div>
         </div>`).join('')}
     </div>`;
 }
+/* 爆料人主页：「不吃香菜谢谢」
+   —— 人物逻辑（v5.2 文档第 3 节）：
+      他曾经真心喜欢沈嘉树（11 个月前的第一条帖子）；
+      无意间摸到音乐平台小号并看到情侣关系后产生幻灭（8 个月前）；
+      之后持续翻查（6 个月 / 5 个月前），最终转为回踩爆料（最新一条）。
+   —— 严禁写"他发现了情侣关系""因爱生恨"这类作者视角的说明，
+      也严禁在评论区解释他为什么不回复。玩家自己从时间线和语气变化里读出来。 */
 function bbsDoubtProfileHTML(){
-  const oldA = { t:'沈亦舟有嫂子了，不信等着看爆料。', time:'4个月前',
-    cms:[['路过的瓜','又来？有图吗'],['吃瓜群众','你上次也说有料'],['不吃香菜谢谢','等着吧'],['匿名用户','蹲一个后续']],
-    dig:'四个月了，你说的爆料呢？' };
-  const oldB = { t:'最近总有人问我为什么关注沈亦舟。说了你们也不信，反正不是因为舞台。', time:'8个月前',
-    cms:[['青柠汽水','那是因为什么'],['夜行动物','你认识本人？'],['不吃香菜谢谢','不方便说']] };
+  const posts = [
+    { time:'11个月前', t:'追了这么久，还是会被他的新舞台打到',
+      body:'追了五年了。<br>每次觉得自己已经不会再因为他的舞台激动，结果还是会被打脸。<br>今年这场真的很好看。',
+      cms:[
+        ['月亮邮差','同感，我今年也是看哭了'],
+        ['只爱舞台','希望你一直这么喜欢下去吧']
+      ] },
+    { time:'8个月前', t:'有些事，可能跟以为的不太一样',
+      body:'说不上来是什么感觉。<br>只是忽然意识到，自己了解的可能一直只是屏幕上的那一部分。<br>具体什么就不说了，反正以后看他的东西，可能跟以前不一样了。',
+      cms:[
+        ['今天也是困困的','方便多说一点吗？'],
+        ['路过的瓜','是发生什么事了吗'],
+        ['糖渍小星球','那你到底看到了什么呀，有点好奇'],
+        ['不吃香菜谢谢','不想说了。我缓一缓。']
+      ] },
+    { time:'6个月前', t:'这里放个东西，挺有意思的',
+      body:'这里放个东西。<br>挺有意思的，感兴趣的人可以自己去看看。',
+      clue:true,
+      cms:[
+        ['阿枝不吃葱','这是啥，一串数字？'],
+        ['深海里的鱼','看着像哪个平台的用户编号'],
+        ['不吃香菜谢谢','嗯，自己看看就知道了。']
+      ] },
+    { time:'5个月前', t:'翻了几个月，原来不是我想多了',
+      body:'翻了几个月，原来不是我想多了。<br>算了。<br>以前喜欢是真的，现在觉得失望也是真的。',
+      cms:[
+        ['半糖去冰','姐姐你这条我看了三遍，有点替你难受'],
+        ['青柠汽水','所以到底是什么事啊，你都翻几个月了'],
+        ['不吃香菜谢谢','已经不重要了。']
+      ] },
+    { time:'最新', t:'有些事，迟早会浮出水面',
+      body:'有些事，迟早会浮出水面。<br>我不多说了。<br>时间会给答案。',
+      cms:[] }
+  ];
   return `
     ${navbar('个人主页', {right:homeKey()})}
     <div class="scroll">
@@ -3403,41 +3985,33 @@ function bbsDoubtProfileHTML(){
         <div style="font-size:12.4px;color:#8b8b96;margin-top:10px;line-height:1.6">简介：（未填写）</div>
       </div>
       <div class="sect-label">TA 的帖子</div>
-      <div style="background:#fff;padding:13px 15px;border-bottom:1px solid var(--line)">
-        <div class="t-meta" style="margin-bottom:5px"><span>${oldA.time}</span></div>
-        <div style="font-size:14.4px;line-height:1.6;color:#22222a">${esc(oldA.t)}</div>
-        <div class="p-cms" style="margin-top:9px">${oldA.cms.map(c=>`<div class="c">💬 <b>@${esc(c[0])}</b>：${esc(c[1])}</div>`).join('')}
-          <div class="c" style="color:#9a9aa6;margin-top:5px">几天后 · ${esc(oldA.dig)}（楼主未回复）</div>
+      ${posts.map(p=>`
+      <div class="dp-item" ${p.clue?'data-clue-post="1"':''} style="background:#fff;padding:13px 15px;border-bottom:1px solid var(--line)">
+        <div class="t-meta" style="margin-bottom:5px"><span>${esc(p.time)}</span></div>
+        <div style="font-size:14.4px;line-height:1.6;color:#22222a;font-weight:600">${esc(p.t)}</div>
+        <div style="font-size:13.4px;line-height:1.68;color:#4a4a53;margin-top:7px">${p.body}</div>
+        ${p.clue?`
+        <div class="music-clue" style="margin-top:9px">
+          云乐用户：${copyable(CFG.musicId, CFG.musicId, 'big')}
         </div>
-      </div>
-      <div style="background:#fff;padding:13px 15px;border-bottom:1px solid var(--line)">
-        <div class="t-meta" style="margin-bottom:5px"><span>${oldB.time}</span></div>
-        <div style="font-size:14.4px;line-height:1.6;color:#22222a">${esc(oldB.t)}</div>
-        <div class="p-cms" style="margin-top:9px">${oldB.cms.map(c=>`<div class="c">💬 <b>@${esc(c[0])}</b>：${esc(c[1])}</div>`).join('')}</div>
-      </div>
-      <div style="background:#fff;padding:13px 15px;border-bottom:1px solid var(--line)">
-        <div class="t-meta" style="margin-bottom:5px"><span>收藏 / 动态</span></div>
-        <div class="music-clue">
-          有些话不适合在这里说。<br>
-          云音乐：用户 ${copyable(CFG.musicId, CFG.musicId, 'big')}
-        </div>
-        <div style="font-size:11.4px;color:#b0b0bc;margin-top:8px">长按或点击这串数字可以复制。</div>
-      </div>
+        <div style="font-size:11.4px;color:#b0b0bc;margin-top:8px">长按这串数字可以选中复制。</div>`:''}
+        ${p.cms.length?`<div class="p-cms" style="margin-top:9px">${p.cms.map(c=>`<div class="c">💬 <b>@${esc(c[0])}</b>：${esc(c[1])}</div>`).join('')}</div>`:''}
+      </div>`).join('')}
       <div style="height:24px"></div>
     </div>`;
 }
 
 /* =====================================================================
-   4. 云音乐
+   4. 云乐
    —— 两段式发现链（v3 文档第 7 节）：
-     ① 论坛里那串数字 → 云音乐搜索 → 疑似小号主页（资料可核对，不明说）
-     ② 主页「一起听 · 夜航船」→ 夜航船主页 → 动态里的小红书账号
+     ① 论坛里那串数字 → 云乐搜索 → 疑似小号主页（资料可核对，不明说）
+     ② 主页「一起听 · 雨停之前」→ 女方主页 → 旧动态里的红书账号
    ===================================================================== */
 const MUSIC_SONGS = [
-  { t:'晚风告白', a:'陈屿' },
+  { t:'晚风经过', a:'陈屿' },
   { t:'一千零一个夜', a:'白屿乐队' },
   { t:'南方的雨', a:'林迟' },
-  { t:'海边的克莱因（电影原声）', a:'群星' },
+  { t:'海边的克莱因（原声带）', a:'群星' },
   { t:'星期日不营业', a:'胡同里' },
   { t:'凌晨四点的便利店', a:'纸飞机' }
 ];
@@ -3459,7 +4033,7 @@ function musicView(){
         app:'music',
         hint:'搜索用户 / 账号 / 歌曲',
         suggest:[
-          { label:'晚风告白', value:'晚风告白' },
+          { label:'晚风经过', value:'晚风经过' },
           { label:'陈屿',     value:'陈屿' }
         ],
         onSearch:(q)=>{
@@ -3482,7 +4056,7 @@ function musicView(){
   if(v==='result'){
     const q = S.flags.musicSearchMiss || '';
     const items = [
-      { title:'晚风告白', sub:'歌曲 · 陈屿', ico:'♪', bg:'#fdecec', fg:'#c0392b' },
+      { title:'晚风经过', sub:'歌曲 · 陈屿', ico:'♪', bg:'#fdecec', fg:'#c0392b' },
       { title:'一千零一个夜', sub:'歌曲 · 白屿乐队', ico:'♪', bg:'#fdecec', fg:'#c0392b' },
       { title:'南方的雨', sub:'歌曲 · 林迟', ico:'♪', bg:'#fdecec', fg:'#c0392b' },
       { title:'深夜歌单：一个人听的十首歌', sub:'歌单 · 收录 10 首', ico:'≡', bg:'#eef0fb', fg:'#5b6ee1' }
@@ -3505,32 +4079,65 @@ function musicView(){
       pal.style.cursor='pointer';
       pal.onclick = ()=>{ S.flags.musicFriendSeen = true; save(); push('pal'); };
     }
+    /* 【v5.2】完成条件：玩家真正看到了资料（生日 / 所在地 / 最近播放）
+       并且浏览到「一起听」关系块之后，才弹。 */
+    const bindBox = $('[data-pal]', w);
+    const markMajor = ()=>{
+      if(S.flags.musicMajorRead) return;
+      S.flags.musicMajorRead = true; save();
+      storyTip('musicMajor', {
+        title:'一项项看过去',
+        thinking:'生日、所在地，还有最近的听歌记录……一项项看过去，巧合好像越来越多了。<br>但这些还只能算线索。',
+        hint:'再看看他的「一起听」，那里可能还有更直接的信息。',
+        ok:'看看一起听'
+      });
+    };
+    if(bindBox){
+      const sc = $('.scroll', w);
+      const onScroll = ()=>{
+        if(!sc) return;
+        const r = bindBox.getBoundingClientRect(), sr = sc.getBoundingClientRect();
+        if(r.top < sr.bottom - 30 && r.bottom > sr.top) markMajor();
+      };
+      if(sc){
+        sc.addEventListener('scroll', onScroll, {passive:true});
+        /* 资料与一起听同屏时，稍作停留即视为已看到 */
+        setTimeout(onScroll, 900);
+      }
+    }
   }
-  /* ---------- 夜航船主页 ---------- */
+  /* ---------- 女方云乐小号「雨停之前」主页 ---------- */
   if(v==='pal'){
     if(!S.flags.musicFriendSeen){ S.flags.musicFriendSeen = true; save(); }
     gain('listen');
 
-    /* 复制小红书 UID 的动作由全局 onClipboardChange 统一处理 */
+    /* 复制红书 UID 的动作由全局 onClipboardChange 统一处理 */
 
-    /* 新开的小红书账号：只给一张截图，不提供任何可跳转的链接 */
+    /* 新开的红书账号：只给一张截图，不提供任何可跳转的链接 */
     bindImages(w, (key)=>{
       if(key!=='xhsAcctShot') return;
       openViewer({
         src: IMG.get('xhsAcctShot'),
-        title:'新开的小红书账号',
-        caption:'截图里是一个叫「柚子慢慢」的红书账号，简介写着：照片放这里。<br>页面本身不能点，你只能记住这个名字和那串 UID。',
+        title:'新开的红书账号',
+        caption:'截图里是一个叫「橘子味的月亮」的红书账号，简介写着：照片放这里。<br>和现在的昵称不一样，但页面本身不能点，你只能记住这串 UID。',
         saveLabel:'记下这个账号',
         onSave:()=>{ S.flags.xhsTipSeen = true; save(); },
         onAfter:()=>{
           if(S.stage<4) unlockStage(4);
           save();
           toast('去红书搜索这串 UID。');
+          /* 【v5.2】完成条件：玩家真的打开了那张关键截图并看完内容 */
+          storyTip('musicPal', {
+            title:'看完这张截图',
+            thinking:'这些一起听的记录、这些对得上的时间……如果只是普通朋友，未免太集中了。<br>而那张截图，又留下了另一个平台的账号。',
+            hint:'把 UID 记下来，去红书搜一下。',
+            ok:'记下 UID'
+          });
         }
       });
     });
 
-    /* 叠图之后回访：评论区补充女方旧昵称，解锁微博搜索 */
+    /* 叠图之后回访：评论区补充女方旧昵称，解锁微浪搜索 */
     const revisit = $('[data-revisit]', w);
     if(revisit){
       revisit.onclick = ()=>{
@@ -3542,10 +4149,10 @@ function musicView(){
         showModal(`
           <div style="font-size:13.4px;line-height:1.8;color:#4a4a53">
             你往下翻，看到评论区又多了一条：<br><br>
-            <b>@一只柚子</b>：那你以前那个只写字的账号呢，还在用吗？<br>
-            <b>@夜航船</b>：偶尔写，没删。以前一直叫「<b>${esc(CFG.girlOldNick)}</b>」，懒得改。
+            <b>@夜航船</b>：那你以前那个只写字的账号呢，还在用吗？<br>
+            <b>@${esc(CFG.girlMusicNick)}</b>：偶尔写，没删。以前一直叫「<b>${esc(CFG.girlOldNick)}</b>」，懒得改。
             <div style="margin-top:12px;padding:11px 12px;background:#fdeef5;border-radius:11px;color:#c0396b;font-size:12.8px">
-              记下这个名字：<b>${esc(CFG.girlOldNick)}</b><br>去微博搜搜看。
+              记下这个名字：<b>${esc(CFG.girlOldNick)}</b><br>去微浪搜搜看。
             </div>
           </div>`, {
           title:'评论区',
@@ -3560,7 +4167,7 @@ function musicHomeHTML(){
   return `
     ${navHeadHome(`
       <div class="pf-row1">
-        <div class="mu-logo">云音乐</div>
+        <div class="mu-logo">云乐</div>
         <div class="pf-search" data-msearch="1" style="cursor:pointer">🔍 搜索用户 / 账号 / 歌曲</div>
       </div>`)}
     <div class="scroll" style="background:#fff">
@@ -3579,37 +4186,74 @@ function musicHomeHTML(){
       </div>
       <div class="mu-sect" style="padding-top:18px">今日热评</div>
       <div style="background:#fff;padding:10px 16px 22px;font-size:12.8px;color:#6b6b76;line-height:1.7">
-        "副歌响起的时候，忽然很想给一个人打电话。" —— 《晚风告白》热评
+        "副歌响起的时候，忽然很想给一个人打电话。" —— 《晚风经过》热评
       </div>
     </div>`;
 }
-/* 疑似小号：只能看到可核对的公开资料，不出现"这就是某某小号"的结论 */
+/* 疑似小号（男方）：只能看到可核对的公开资料，不出现"这就是某某小号"的结论
+   —— 最近播放与动态都与男主微浪同一天、同一首歌 / 同一部电影严格对应，
+      但页面上不写"本人小号"，也不自动判定身份。 */
 function musicMajorHTML(){
+  const song = CFG.idolSong, film = CFG.idolFilm;
   return `
     ${navbar('用户主页', {right:homeKey()})}
     <div class="scroll" style="background:#fff">
       <div class="mu-p-head">
-        ${avaColor('舟',62,false,'#3c3a52','#d8d4ea')}
+        ${avaColor('树',62,false,'#3c3a52','#d8d4ea')}
         <div style="flex:1">
           <div class="mu-p-nm">${esc(CFG.musicNick)}</div>
           <div class="mu-p-bio">偶尔听歌，不常上线。</div>
           <div class="mu-chips">
             <span class="chip">📍 IP属地：<b>${esc(CFG.people.idol.ip)}</b></span>
             <span class="chip">🎧 听歌 <b>3286</b> 首</span>
+            <span class="chip">🎂 生日：<b>${esc(CFG.people.idol.bdText)}</b></span>
             <span class="chip">ID：<b>${esc(CFG.musicId)}</b></span>
           </div>
         </div>
       </div>
+      <div class="couple-box">
+        <div class="cp-top">
+          <span class="cp-mode">💞 ${esc(CFG.coupleBind.mode)}</span>
+          <span class="cp-days">已绑定 ${esc(CFG.coupleBind.days)} 天</span>
+        </div>
+        <div class="cp-row">
+          <span class="cp-lb">情侣关系</span>
+          <span class="cp-vl">已与 1 位用户绑定 · 于 ${esc(CFG.coupleBind.since)} 建立</span>
+        </div>
+        <div class="cp-row">
+          <span class="cp-lb">专属歌单</span>
+          <span class="cp-vl">《${esc(CFG.coupleBind.listName)}》· 收录 ${esc(CFG.coupleBind.songs)} 首</span>
+        </div>
+      </div>
       <div class="mu-list-title">最近播放</div>
       <div class="mu-songs" style="padding-bottom:8px">
-        <div class="mu-song"><div class="idx">1</div><div class="s-t"><b>晚风告白</b><i>陈屿 · 今天 00:12 播放</i></div><div class="s-x">♡</div></div>
-        <div class="mu-song"><div class="idx">2</div><div class="s-t"><b>南方的雨</b><i>林迟 · 昨天 23:58 播放</i></div><div class="s-x">♡</div></div>
-        <div class="mu-song"><div class="idx">3</div><div class="s-t"><b>一千零一个夜</b><i>白屿乐队 · 09-27 播放</i></div><div class="s-x">♡</div></div>
+        <div class="mu-song"><div class="idx">1</div><div class="s-t"><b>${esc(song.title)}</b><i>${esc(song.artist)} · 09-29 播放</i></div><div class="s-x">♡</div></div>
+        <div class="mu-song"><div class="idx">2</div><div class="s-t"><b>${esc(film.ostd)}</b><i>${esc(film.title)} OST · 09-26 播放</i></div><div class="s-x">♡</div></div>
+        <div class="mu-song"><div class="idx">3</div><div class="s-t"><b>南方的雨</b><i>林迟 · 09-27 播放</i></div><div class="s-x">♡</div></div>
+      </div>
+      <div class="mu-list-title">TA 的动态</div>
+      <div style="background:#fff;padding:0 16px 6px">
+        <div class="floor" style="padding:13px 0;border-bottom:1px solid #f4f4f7">
+          ${avaColor('树',40,false,'#3c3a52','#d8d4ea')}
+          <div class="f-main">
+            <div class="f-top"><span class="nm">${esc(CFG.musicNick)}</span><span style="margin-left:auto">${esc(song.date)}</span></div>
+            <div class="f-text">最近一直在单曲循环《${esc(song.title)}》，副歌那几句特别上头。<br>分享给同样睡不着的朋友。</div>
+            <div class="f-foot"><span>♡ 6</span><span>分享 1</span></div>
+          </div>
+        </div>
+        <div class="floor" style="padding:13px 0;border-bottom:none">
+          ${avaColor('树',40,false,'#3c3a52','#d8d4ea')}
+          <div class="f-main">
+            <div class="f-top"><span class="nm">${esc(CFG.musicNick)}</span><span style="margin-left:auto">${esc(film.date)}</span></div>
+            <div class="f-text">看完了《${esc(film.title)}》，回来把整张原声带又听了一遍。<br>尤其是最后一段，散场了还坐在那里不想走。</div>
+            <div class="f-foot"><span>♡ 11</span><span>分享 3</span></div>
+          </div>
+        </div>
       </div>
       <div class="heardbox" data-pal="1" style="cursor:pointer">
-        ${avaColor('船',46,true,'#58506a','#dcd6e8')}
+        ${avaColor('雨',46,true,'#4a4458','#dcd6e8')}
         <div class="hb-txt">
-          <b>一起听 · 夜航船</b>
+          <b>一起听 · ${esc(CFG.girlMusicNick)}</b>
           <i>累计一起听歌 <b style="color:#c0396b">${CFG.listenTogether}</b> 小时 · 最近一次 2026-09-27 23:41</i>
         </div>
         <span style="color:#c0c0cc;font-size:18px">›</span>
@@ -3622,29 +4266,47 @@ function musicMajorHTML(){
       </div>
     </div>`;
 }
-/* 夜航船主页：动态里自然提到「柚子慢慢」，评论补充"平时记录一些日常和他的碎片" */
+/* 女方云乐小号「雨停之前」：由女方本人运营。
+   —— 那条发红书的动态是她刚开通时（2023 年）发的旧动态；
+      截图里显示的是她当年的旧昵称「汽水味的月亮」，与现在的昵称不同，
+      但 UID 与现在搜索用的完全一致。
+   —— 熟人用独立昵称（如「夜航船」）评论提问，女方本人以「雨停之前」身份回复。 */
 function musicPalHTML(){
   return `
     ${navbar('用户主页', {right:homeKey()})}
     <div class="scroll" style="background:#fff">
       <div class="mu-p-head">
-        ${avaColor('船',62,false,'#58506a','#dcd6e8')}
+        ${avaColor('雨',62,false,'#4a4458','#dcd6e8')}
         <div style="flex:1">
-          <div class="mu-p-nm">夜航船</div>
-          <div class="mu-p-bio">随便听听。<br>偶尔替人保管一些歌。</div>
+          <div class="mu-p-nm">${esc(CFG.girlMusicNick)}</div>
+          <div class="mu-p-bio">随便听听。<br>偶尔写点自己的东西。</div>
           <div class="mu-chips">
             <span class="chip">📍 IP属地：上海</span>
             <span class="chip">🎧 听歌 <b>1.2 万</b> 首</span>
           </div>
         </div>
       </div>
+      <div class="couple-box">
+        <div class="cp-top">
+          <span class="cp-mode">💞 ${esc(CFG.coupleBind.mode)}</span>
+          <span class="cp-days">已绑定 ${esc(CFG.coupleBind.days)} 天</span>
+        </div>
+        <div class="cp-row">
+          <span class="cp-lb">情侣关系</span>
+          <span class="cp-vl">已与 1 位用户绑定 · 于 ${esc(CFG.coupleBind.since)} 建立</span>
+        </div>
+        <div class="cp-row">
+          <span class="cp-lb">专属歌单</span>
+          <span class="cp-vl">《${esc(CFG.coupleBind.listName)}》· 收录 ${esc(CFG.coupleBind.songs)} 首</span>
+        </div>
+      </div>
       <div class="mu-list-title">TA 的动态</div>
       <div style="background:#fff;padding:0 16px 6px">
         <div class="floor" style="padding:13px 0;border-bottom:none">
-          ${avaColor('船',40,false,'#58506a','#dcd6e8')}
+          ${avaColor('雨',40,false,'#4a4458','#dcd6e8')}
           <div class="f-main">
-            <div class="f-top"><span class="nm">夜航船</span><span style="margin-left:auto">2026-09-26</span></div>
-            <div class="f-text">这是我新开的账号，会分享日常，欢迎找我玩～</div>
+            <div class="f-top"><span class="nm">${esc(CFG.girlMusicNick)}</span><span style="margin-left:auto">2023-04-16</span></div>
+            <div class="f-text">刚开了个新的账号，以后照片放那边。<br>不太擅长露脸，先在这里记一笔，欢迎来找我玩。</div>
             <div style="margin-top:9px;border-radius:12px;overflow:hidden;border:1px solid #ececf2;background:#0d0d12" data-img="xhsAcctShot">
               <img src="${IMG.get('xhsAcctShot')}" style="display:block;width:100%">
             </div>
@@ -3652,21 +4314,23 @@ function musicPalHTML(){
             <div style="margin-top:9px;padding:10px 12px;background:#f7f7fa;border-radius:11px">
               <div style="font-size:11.6px;color:#9a9aa6">红书号（UID）</div>
               <div style="margin-top:4px;font-size:14.4px;word-break:break-all">${copyable(CFG.girlXhsUid, CFG.girlXhsUid)}</div>
-              <div style="font-size:11.2px;color:#b0b0bc;margin-top:6px">点击可复制这个 UID</div>
+              <div style="font-size:11.2px;color:#b0b0bc;margin-top:6px">点击记下这个 UID，长按可选中复制</div>
             </div>
             <div class="p-cms" style="margin-top:9px">
-              <div class="c">💬 <b>@一只柚子</b>：这是谁的小号？</div>
-              <div class="c">💬 <b>@夜航船</b>：朋友的。平时记录一些日常和他的碎片。</div>
-              <div class="c">💬 <b>@青柠汽水</b>：她不是所有平台都叫「${esc(CFG.girlOldNick)}」吗？怎么新平台改名了？</div>
-              <div class="c">💬 <b>@夜航船</b>：哈哈哈，我家那位说，所有平台都用一个名字不安全，所以新平台就改了个名。</div>
+              <div class="c">💬 <b>@夜航船</b>：这是你自己新开的？</div>
+              <div class="c">💬 <b>@${esc(CFG.girlMusicNick)}</b>：嗯，记录一点日常。</div>
+              <div class="c">💬 <b>@青柠汽水</b>：你不是其他平台都叫「${copyable(CFG.girlOldNick, CFG.girlOldNick)}」吗？这边只写了「${esc(CFG.girlXhsOldNick)}」，两个都对不上号啊。</div>
+              <div class="c">💬 <b>@${esc(CFG.girlMusicNick)}</b>：哈哈哈，我家那位说，所有平台都用一个名字不安全，所以新平台就换了个。</div>
+              <div class="c">💬 <b>@青柠汽水</b>：……听着怎么不像普通朋友说的话。</div>
+              <div class="c">💬 <b>@${esc(CFG.girlMusicNick)}</b>：他不让我说。</div>
             </div>
             ${S.flags.overlaySaved && S.flags.musicFriendSeen ? `
             <div class="revisit-block" data-revisit="1">
               <div class="rv-h">💬 有新的评论</div>
-              <div class="rv-b"><b>@一只柚子</b>：那你以前那个只写字的账号呢，还在用吗？</div>
-              <div class="rv-b"><b>@夜航船</b>：偶尔写，没删。以前一直叫「${esc(CFG.girlOldNick)}」，懒得改。</div>
+              <div class="rv-b"><b>@夜航船</b>：那你以前那个只写字的账号呢，还在用吗？</div>
+              <div class="rv-b"><b>@${esc(CFG.girlMusicNick)}</b>：偶尔写，没删。以前一直叫「${copyable(CFG.girlOldNick, CFG.girlOldNick)}」，懒得改。</div>
             </div>`:''}
-            <div class="f-foot"><span>赞 46</span><span>评论 12</span><span>2026-09-26</span></div>
+            <div class="f-foot"><span>赞 46</span><span>评论 12</span><span>2023-04-16</span></div>
           </div>
         </div>
       </div>
@@ -3680,7 +4344,7 @@ function musicPalHTML(){
       2026-09-24 / 2026-09-20 / 2025-04-12 / 2025-03-02
       2024-10-06 / 2024-08-24 / 2024-05-02 / 2024-02-11
    —— 主页里有自然文字：「照片放这里，……偶尔会记在另一个地方」
-      这是后面"回访夜航船 → 解锁微博搜索"的伏笔，不做高亮。
+      这是后面"回访夜航船 → 解锁微浪搜索"的伏笔，不做高亮。
    ===================================================================== */
 const XHS_POSTS = [
   { id:'x1', key:'cafe',      cap:'新开的甜品店',           sub:'2026-09-24 · 上海',      time:'2026-09-24', dessert:true },
@@ -3722,6 +4386,7 @@ function xhsView(){
             sb.innerHTML = `🔍 ${q}`;
             sb.classList.add('typed');
             push('profile');
+            /* 【v5.2】搜索成功不弹剧情。等玩家真正打开关键旧内容时再触发。 */
           }else{
             S.flags.xhsSearchMiss = q; save();
             push('xresult');
@@ -3748,6 +4413,15 @@ function xhsView(){
   }
   bindImages(w, (key, node)=>{
     const p = XHS_POSTS.find(x=>x.key===key) || {};
+    /* 【v5.2】打开关键旧内容（那只戴表的手）时触发"红书主页"节点 */
+    if(p.hand){
+      storyTip('xhsProfile', {
+        title:'只是打开了一张照片',
+        thinking:'如果不是那张截图，我可能根本不会想到这里。<br>看起来只是一个普通生活号，可时间线里似乎还藏着东西。',
+        hint:'从她的旧内容开始看，留意照片和日期。',
+        ok:'继续看'
+      });
+    }
     openViewer({
       src: IMG.get(key),
       title: p.cap || '图片',
@@ -3762,6 +4436,15 @@ function xhsView(){
         if(p.hand && S.stage<5) unlockStage(5);
         save();
         if(v==='profile') render();
+        /* 【v5.2】完成条件：真正保存了这张关键照片之后才弹 */
+        if(p.hand){
+          storyTip('xhsHandSaved', {
+            title:'这只手',
+            thinking:'这只手没拍到脸。单看照片什么都说明不了。<br>可这块表……我之前是不是见过？',
+            hint:'去找他的公开动态，把时间和照片对一对。',
+            ok:'去找他的动态'
+          });
+        }
       }
     });
   });
@@ -3784,6 +4467,10 @@ function xhsView(){
           { label:'记录到记事本', onClick:()=>{
               S.notes.travels[d] = { date:p.time, place:place };
               save(); closeModal(); toast('已记下：'+p.time+' · '+place);
+              /* 三条重合地点（大理 / 厦门 / 重庆）都记下后，即为该证据 */
+              if(S.notes.travels.dali && S.notes.travels.xiamen && S.notes.travels.chongqing && !S.evidence.travel){
+                gain('travel'); save();
+              }
             } },
           { label:'先不记', cls:'ghost', onClick:closeModal }
         ]
@@ -3792,7 +4479,7 @@ function xhsView(){
   });
   return w;
 }
-/* 首页"发现"里混排的普通用户笔记 —— 让首页看起来像正常小红书
+/* 首页"发现"里混排的普通用户笔记 —— 让首页看起来像正常红书
    （不做高亮、不加提示，女方的笔记混在其中） */
 const XHS_FEED = [
   { key:'gen3', cap:'厨房改造第三天，终于有个样子了', sub:'2.3万赞', user:'小满的家', ic:'满', bg:'#d8ecd9', fg:'#5d9663' },
@@ -3818,17 +4505,9 @@ function xhsCardNode(p){
     </div>`;
 }
 function xhsHomeHTML(){
-  /* 女方 8 条笔记 + 12 条普通笔记，交错排布，看起来就是普通首页 */
-  const mine = XHS_POSTS.map(p=>({ mine:true, key:p.key, cap:p.cap, sub:p.sub }));
-  const others = XHS_FEED.slice();
-  const feed = [];
-  let i=0, j=0;
-  while(i<mine.length || j<others.length){
-    /* 每两条普通笔记插一条女方的，不让她的内容集中出现 */
-    if(j<others.length) feed.push(others[j++]);
-    if(j<others.length) feed.push(others[j++]);
-    if(i<mine.length) feed.push(mine[i++]);
-  }
+  /* 首页始终是普通推荐流：只展示与女方无关的笔记。
+     女方的笔记只能在通过搜索进入她的主页后看到，绝不出现在推荐流里，
+     也不因为"已访问过她的主页"就被推荐。 */
   return `
     ${navHeadHome(`
       <div class="pf-row1">
@@ -3841,7 +4520,7 @@ function xhsHomeHTML(){
       </div>`)}
     <div class="scroll" style="background:#fff">
       <div class="xhs-grid">
-        ${feed.map(p=>xhsCardNode(p)).join('')}
+        ${XHS_FEED.map(p=>xhsCardNode(p)).join('')}
       </div>
       <div style="height:20px"></div>
     </div>`;
@@ -3882,9 +4561,9 @@ function xhsProfileHTML(){
 
 
 /* =====================================================================
-   6. Insgram（偶像公开账号）
+   6. 拾光（偶像公开账号）
    —— 只作为"公开可查的对照素材"。
-      旅游照用来和小红书的日期地点对照；自拍里的手表用来和照片里的手叠图。
+      旅游照用来和红书的日期地点对照；自拍里的手表用来和照片里的手叠图。
       这里不出现"他就是男朋友"之类的结论。
    ===================================================================== */
 const IG_POSTS = [
@@ -3921,10 +4600,14 @@ function igView(){
       /* 已记事本里记过这条 → 自动做一次对照 */
       const rec = S.notes.travels[p.travel];
       if(rec && !rec.idol){ setTimeout(()=> igTravelModal(p), 400); }
+      /* 【v5.2】不在这里弹剧情。等玩家真正完成一次日期/地点对照后，
+         由 igTravelModal 内部触发 igTravel 节点。 */
     }
     if(p && p.watch){
       const btn = $('[data-goto-editor]', w);
       if(btn) btn.onclick = ()=>{ if(S.stage<5) unlockStage(5); save(); go('editor'); };
+      /* 【v5.2】不在这里弹剧情。等玩家真正查看/保存了腕表照片后，
+         在 onSave 回调里触发 igWatch 节点。 */
     }
     /* 演唱会帖：男方一侧已读。女方一侧读过之后才算完成 */
     if(p && p.travel==='concert' && !S.flags.idolConcertRead){
@@ -3945,7 +4628,18 @@ function igView(){
         onSave:()=>{
           if(pp.watch && !S.evidence.watch){ S.flags.igWatchFound = true; gain('watch'); save(); }
         },
-        onAfter:()=>{ render(); }
+        onAfter:()=>{
+          render();
+          /* 【v5.2】完成条件：真正查看/保存了这块腕表照片 */
+          if(pp.watch){
+            storyTip('igWatch', {
+              title:'又是这块表',
+              thinking:'又是这块表。钢带、表盘、表冠的位置……和刚才那张照片里的细节越来越像了。',
+              hint:'把两张照片都保存下来，再用叠图台仔细对一下。',
+              ok:'去叠图台'
+            });
+          }
+        }
       });
     });
   }
@@ -3955,20 +4649,20 @@ function igHomeHTML(){
   return `
     ${navHeadHome(`
       <div class="pf-row1">
-        <div class="ig-logo">Insgram</div>
+        <div class="ig-logo">拾光</div>
         <div class="pf-search">🔍 搜索</div>
       </div>`)}
     <div class="scroll" style="background:#fff">
       <div class="ig-head">
         <div class="ig-top">
-          ${avaColor('舟',72,false,'#3c4251','#e8e8f0')}
+          ${avaColor('树',72,false,'#3c4251','#e8e8f0')}
           <div class="st"><b>412</b><i>帖子</i></div>
           <div class="st"><b>246万</b><i>粉丝</i></div>
           <div class="st"><b>31</b><i>关注</i></div>
         </div>
         <div class="ig-bio">
           <b>${esc(CFG.people.idol.name)}</b> · ${esc(CFG.people.idol.role)}<br>
-          <span class="em">@${CFG.people.idol.bd}_yizhou</span><br>
+          <span class="em">@${CFG.people.idol.bd}_jiashu</span><br>
           舞台 / 音乐 / 电影<br>
           IP属地：${esc(CFG.people.idol.ip)}
         </div>
@@ -3996,7 +4690,7 @@ function igPostHTML(p){
     ${navbar('帖子', {right:homeKey()})}
     <div class="scroll" style="background:#fff">
       <div style="display:flex;align-items:center;gap:10px;padding:12px 14px">
-        ${avaColor('舟',40,false,'#3c4251','#e8e8f0')}
+        ${avaColor('树',40,false,'#3c4251','#e8e8f0')}
         <div style="flex:1">
           <div style="font-size:14px;font-weight:600">${esc(CFG.people.idol.name)}</div>
           <div style="font-size:11.6px;color:#a3a3af;margin-top:3px">${p.city} · ${p.date}</div>
@@ -4030,7 +4724,7 @@ function igPostHTML(p){
 }
 function igTravelModal(p){
   const rec = S.notes.travels[p.travel];
-  if(!rec){ toast('先去小红书的对应帖子，把日期和地点记进记事本。'); return; }
+  if(!rec){ toast('先去红书的对应帖子，把日期和地点记进记事本。'); return; }
   showModal(`
     <div style="font-size:13.2px;line-height:1.78;color:#4a4a53">
       你翻回记事本。<br><br>
@@ -4039,7 +4733,7 @@ function igTravelModal(p){
         <b>${rec.date}</b> · <b>${rec.place}</b>
       </div>
       <div style="margin-top:9px;background:#fafafa;border-radius:10px;padding:11px 12px;line-height:1.85">
-        这条 Insgram<br>
+        这条 拾光<br>
         <b>${p.date}</b> · <b>${p.city}</b>
       </div>
       <div style="margin-top:12px;color:#1e7d4c;font-weight:600">同一天，同一个地方。</div>
@@ -4050,6 +4744,13 @@ function igTravelModal(p){
           rec.idol = { date:p.date, place:p.city };
           if(!S.evidence.igMatch) gain('igMatch');
           save(); closeModal(); toast('已记录：同日同城');
+          /* 【v5.2】完成条件：真正完成了一次日期/地点对照 */
+          storyTip('igTravel', {
+            title:'时间对上了',
+            thinking:'时间对上了。一次可能是巧合，那么下一次呢？',
+            hint:'再找一条她去过的地方，对照他的动态。',
+            ok:'继续对照'
+          });
         } },
       { label:'关闭', cls:'ghost', onClick:closeModal }
     ]
@@ -4071,7 +4772,7 @@ function noteView(){
   const cnt = travels.filter(t=>S.notes.travels[t.k]).length;
   const other = [
     { on:S.notes.wbAnniv, t:'2024-03-17', d:'你自己标记的一个日期。' },
-    { on:S.evidence.concert, t:'2026-09-20', d:'演唱会当晚的对应记录。' },
+    { on:S.evidence.concert, t:'2024-08-24', d:'演唱会当晚的对应记录。' },
     { on:S.evidence.anniv, t:'纪念日', d:'两条记录指向同一天。' }
   ].filter(x=>x.on);
   w.innerHTML = `
@@ -4107,7 +4808,7 @@ function noteView(){
 
 /* =====================================================================
    8. 拼图台（图片叠图编辑器）
-   —— 保存叠图结果后，不直接送出女方微博；
+   —— 保存叠图结果后，不直接送出女方微浪；
       只解锁"回访夜航船"这条线（由桌面的红点/轻提示引导）。
    ===================================================================== */
 let ED = null;
@@ -4129,23 +4830,43 @@ function editorView(){
   const w = document.createElement('div');
   w.className = 'app-view';
   const canAlign = S.evidence.xhsHand && S.evidence.watch;
+  const hasHand = !!S.evidence.xhsHand;
+  const hasWatch = !!S.evidence.watch;
+  const ready = hasHand && hasWatch;
   w.innerHTML = `
     ${navbar('叠图台', {right:homeKey()})}
     <div style="flex:0 0 auto;padding:8px 14px;background:#fff;border-bottom:1px solid var(--line);font-size:12.4px;color:#8b8b96;display:flex;justify-content:space-between;align-items:center">
       <span>拖动图片移动 · 滑块缩放</span>
       <span id="edSelName" style="color:#c0396b;font-weight:600"></span>
     </div>
-    ${(!S.evidence.xhsHand || !S.evidence.watch) && !S.flags.overlaySaved ? `
-      <div class="notice" style="margin:12px 13px">
-        <span class="ni">⚠️</span>
-        <span>素材还差一张。先把<b>女方照片</b>和<b>偶像自拍</b>都保存下来。</span>
-      </div>` : ''}
+    ${!ready ? `
+      <div class="notice" style="margin:12px 13px;flex-direction:column;align-items:stretch;gap:11px">
+        <div style="display:flex;gap:9px;align-items:flex-start"><span class="ni">⚠️</span>
+          <span>${!hasHand && !hasWatch
+            ? '素材还没保存。需要<b>女方照片</b>和<b>偶像自拍</b>两张。'
+            : (!hasHand
+              ? '还差<b>女方照片</b>（红书里那只戴表的手）。保存后这里会自动显示。'
+              : '还差<b>偶像自拍</b>（拾光 里那张自拍）。保存后这里会自动显示。')}</span>
+        </div>
+        <div style="display:flex;gap:10px">
+          ${!hasHand?`<button class="btn ghost" style="flex:1;height:38px;font-size:12.6px" data-edgoto="xhs">去红书找照片</button>`:''}
+          ${!hasWatch?`<button class="btn ghost" style="flex:1;height:38px;font-size:12.6px" data-edgoto="ig">去 拾光 找自拍</button>`:''}
+        </div>
+      </div>` : `
+      <div class="notice ok" style="margin:12px 13px">
+        <span class="ni">✅</span>
+        <span>素材已齐（女方照片 + 偶像自拍）。可以开始比对：拖动、一键对齐或自动识别重叠。</span>
+      </div>`}
     <div class="editor-stage" id="edStage" style="flex:1">
-      ${ED.layers.map(l=>`
-        <div class="layer" data-layer="${l.id}"
-          style="left:${l.x*100}%;top:${l.y*100}%;width:${l.w*100}%;transform:rotate(${l.rot}deg);opacity:${l.op}">
-          <img src="${IMG.get(l.key)}" alt="">
-        </div>`).join('')}
+      ${ED.layers.map(l=>{
+        const saved = (l.key==='xhsHand') ? hasHand : hasWatch;
+        const st = `left:${l.x*100}%;top:${l.y*100}%;width:${l.w*100}%;transform:rotate(${l.rot}deg);opacity:${l.op}`;
+        if(!saved && !S.flags.overlaySaved){
+          return `<div class="layer layer-ph" data-layer="${l.id}" style="${st}">
+            <div class="layer-ph-t">（这张照片<br>还没保存）</div></div>`;
+        }
+        return `<div class="layer" data-layer="${l.id}" style="${st}"><img src="${IMG.get(l.key)}" alt=""></div>`;
+      }).join('')}
     </div>
     <div class="editor-bar">
       <div class="editor-tools">
@@ -4186,6 +4907,11 @@ function syncEditor(w){
 }
 function bindEditor(w){
   $$('[data-pick]', w).forEach(b=> b.onclick = ()=>{ ED.sel = b.dataset.pick; syncEditor(w); });
+
+  /* 素材缺失时，直接跳回来源平台去保存 */
+  $$('[data-edgoto]', w).forEach(b=>{
+    b.onclick = ()=>{ const a = b.dataset.edgoto; save(); go(a); };
+  });
 
   const st = $('#edStage', w);
   st.addEventListener('pointerdown', e=>{
@@ -4229,7 +4955,9 @@ function bindEditor(w){
   /* 一键自动识别重叠：直接把两张图叠合，并判定证据收集成功 */
   const au = $('[data-auto]', w);
   if(au) au.onclick = ()=>{
-    if(!S.evidence.xhsHand || !S.evidence.watch){ toast('素材还差一张。'); return; }
+    const miss = !S.evidence.xhsHand ? '女方照片（红书里那只戴表的手）'
+               : (!S.evidence.watch ? '偶像自拍（拾光 里那张自拍）' : '');
+    if(miss){ toast('还差'+miss+'，先去保存它。'); return; }
     au.disabled = true;
     au.innerHTML = `<span class="spinner"></span> 正在识别…`;
     setTimeout(()=>{
@@ -4263,17 +4991,28 @@ function bindEditor(w){
         </div>
       </div>`, {
       title:'叠图结果',
-      actions:[{ label:'回到桌面', onClick:()=>{ closeModal(); go('desktop'); } }]
+      actions:[{ label:'回到桌面', onClick:()=>{
+        closeModal(); go('desktop');
+        /* 【v5.2】完成条件：真正完成叠图并确认结果 */
+        storyTip('afterOverlay', {
+          title:'叠完之后',
+          thinking:'看起来是同一块表。两张照片里的细节高度相似。<br>但这还只是物证，我还需要更直接的线索。',
+          hint:'回到云乐，看看那个账号还有没有留下别的东西。',
+          ok:'回云乐看看'
+        });
+      } }]
     });
   }
 
   const sv = $('#edSave', w);
   if(sv) sv.onclick = ()=>{
-    if((!S.evidence.xhsHand || !S.evidence.watch) && !S.flags.overlaySaved){
-      toast('素材还差一张。'); return;
+    const miss = !S.evidence.xhsHand ? '女方照片（红书里那只戴表的手）'
+               : (!S.evidence.watch ? '偶像自拍（拾光 里那张自拍）' : '');
+    if(miss && !S.flags.overlaySaved){
+      toast('还差'+miss+'，先去保存它。'); return;
     }
     if(!ED.moved && !S.flags.overlaySaved){
-      toast('先用「自动识别重叠」或手动挪一挪，让两张图对起来。');
+      toast('请先拖动或使用自动对齐，把两张图片对起来。');
       return;
     }
     finishOverlay();
@@ -4281,11 +5020,13 @@ function bindEditor(w){
 }
 
 /* =====================================================================
-   9. 女方微博小号「打烊前的月亮」
-   —— 倒序展示；首次只加载最近 2 条，点「加载更早微博」逐步展开。
+   9. 女方微浪小号「打烊前的月亮」
+   —— 倒序展示；首次只加载最近 2 条，点「加载更早微浪」逐步展开。
       正确时间序（v3 文档第 11 节）：
       2025-10-19 → 2025-09-27 → 2025-04-12 → 2024-10-06 → 2024-08-24
       → 2024-05-02 → 2024-03-17 → 2024-01-08 → 2023-11-02 → 2023-05-11
+   —— g8 / g9 里出现小写字母 "sjs"：这是她私下的写法，
+      也是结局 A 里"那些深夜写下的句子"的真实出处，玩家读过才算看到。
    ===================================================================== */
 const GIRL_WB = [
   { id:'g1', time:'2025-10-19 23:12', text:'秋天了。最近很少写东西，也没什么好写的。<br>有些事情说破了反而没意思，就这样吧。' },
@@ -4295,9 +5036,10 @@ const GIRL_WB = [
   { id:'g5', time:'2024-08-24 23:58', text:'今天在体育馆三排，看着他在台上发光。<br>全场都在喊他的名字，只有我知道，散场之后他会跟我说什么。', concert:true },
   { id:'g6', time:'2024-05-02 19:44', text:'大理第二天。风很大，云跑得比人快。<br>他说以后老了，就找一个这样的地方住下。' },
   { id:'g7', time:'2024-03-17 00:03', text:'第三个纪念日。<br>他今天发了两个字，下面粉丝都在猜他在说什么。<br>只有我知道那是说给谁听的。', anniv:true },
-  { id:'g8', time:'2024-01-08 22:10', text:'朋友问我男朋友是做什么的。<br>我说，是一个很多人喜欢的人。她笑我在做梦。' },
-  { id:'g9', time:'2023-11-02 23:41', text:'他最近很忙，消息都回得很短。<br>我知道不是他的问题，可我还是有点难过。' },
-  { id:'g10', time:'2023-05-11 01:20', text:'我今天在台下看他唱到一半。<br>我知道他不会看到我，但我还是高兴了一整晚。' }
+  { id:'g8', time:'2024-01-08 22:10', text:'朋友问我最近总提起的 S 先生是谁。<br>我说，是一个很忙、但会记得回家吃饭的人。她笑我在做梦。' },
+  { id:'g9', time:'2023-11-02 23:41', text:'他最近很忙，消息都回得很短。<br>我知道不是他的问题，可我还是有点难过。<br>只能在这里写一句：<b>sjs</b>，你要照顾好自己。', sjs:true },
+  { id:'g10', time:'2023-05-11 01:20', text:'我今天在台下看他唱到一半。<br>我知道他不会看到我，但我还是高兴了一整晚。' },
+  { id:'g11', time:'2023-02-14 02:07', text:'凌晨两点，睡不着。<br>翻到他两年前的舞台，忽然很想跟谁说说话，可谁都不能说。<br>就写三个字母吧，<b>sjs</b>，反正没人看得懂。', sjs:true }
 ];
 
 function girlWBView(){
@@ -4318,7 +5060,7 @@ function girlWBView(){
         </div>
         <div class="wb-ph-meta"><span>📍 IP属地：上海</span><span>🔒 仅自己可见为主</span></div>
         <div class="wb-stats">
-          <div><b>126</b>微博</div><div><b>3</b>关注</div><div><b>18</b>粉丝</div>
+          <div><b>126</b>微浪</div><div><b>3</b>关注</div><div><b>18</b>粉丝</div>
         </div>
         <div style="padding:0 0 14px;font-size:11.6px;color:#a3a3af">注册于 2023-04。几乎没有互动。</div>
       </div>
@@ -4330,6 +5072,8 @@ function girlWBView(){
   bindNav(w);
 
   if(!S.flags.girlWBSeen){ S.flags.girlWBSeen = true; save(); }
+  /* 【v5.2】首次进入女方微浪主页不设置任何剧情弹窗。
+     让玩家自行阅读、自行点「加载更早微浪」。 */
 
   const list = $('#gwbList', w);
   const moreBox = $('#gwbMoreBox', w);
@@ -4343,6 +5087,15 @@ function girlWBView(){
     node.onclick = ()=> onRead(p, node);
     list.appendChild(node);
     return node;
+  }
+  /* 【v5.3】阅读过程中的收尾检查：
+     读完最后一条微浪时这里只记录状态，不再弹窗——
+     因为"读完微浪"和"证据收齐"几乎是同一时刻发生的，
+     两个弹窗会一起冒出来。统一改由"退出微浪回桌面"时触发一次，
+     见 part_engine.js 的 go() → maybeAllEvidenceTip()。 */
+  function checkAllReadDone(){
+    const allRead = GIRL_WB.every(p=>S.flags['read_'+p.id]);
+    if(allRead) S.flags.girlWBAllReadDone = true;
   }
   function onRead(p, node){
     /* 重复点击不重复计数 */
@@ -4363,11 +5116,22 @@ function girlWBView(){
       return;
     }
     save();
+    /* 【v5.2】完成条件：真正打开了那条只写 sjs 的关键微浪 */
+    if(p.sjs){
+      storyTip('girlWBsjs', {
+        title:'三个字母',
+        thinking:'sjs。她没有写名字，只写了三个字母。<br>如果我没猜错，这应该不是随手写的。',
+        hint:'继续往更早的微浪看，时间线可能比单条内容更重要。',
+        ok:'继续往下翻'
+      });
+    }
+    /* 【v5.3】读完最后一条后立刻检查是否已全部读完 */
+    checkAllReadDone();
   }
   function renderMore(){
     const hasMore = loaded < GIRL_WB.length;
     moreBox.innerHTML = hasMore
-      ? `<div class="older-bar" data-gwb-more="1">加载更早微博 ▾（还有 ${GIRL_WB.length - loaded} 条）</div>`
+      ? `<div class="older-bar" data-gwb-more="1">加载更早微浪 ▾（还有 ${GIRL_WB.length - loaded} 条）</div>`
       : '';
     const mb = $('[data-gwb-more]', w);
     if(mb){
@@ -4384,6 +5148,16 @@ function girlWBView(){
   }
   GIRL_WB.slice(0, loaded).forEach(attach);
   renderMore();
+  /* 【v5.2】完成条件：所有要求阅读的微浪均被玩家实际打开 */
+  requestAnimationFrame(checkAllReadDone);
+  /* 从「对应微浪」详情返回时，恢复到触发弹窗前的滚动位置 */
+  requestAnimationFrame(()=>{
+    const sc = $('#gwbScroll', w);
+    if(sc && S.flags.gwbReturning && S.flags.gwbScrollTop){
+      sc.scrollTop = S.flags.gwbScrollTop;
+      S.flags.gwbReturning = false; save();
+    }
+  });
   return w;
 }
 function girlWbNode(p){
@@ -4394,8 +5168,8 @@ function girlWbNode(p){
       <div class="p-name">${esc(CFG.people.girlWB.name)}</div>
       <div class="p-time">${esc(p.time)}<span>来自 Web</span></div>
       <div class="p-text">${p.text}</div>
-      ${p.concert?`<div class="gwb-tip">📌 同一天，他在微博发了巡演首站的舞台照。</div>`:''}
-      ${p.anniv?`<div class="gwb-tip">📌 这一天，他在微博发了两个字。</div>`:''}
+      ${p.concert?`<div class="gwb-tip">📌 同一天，他在微浪发了巡演首站的舞台照。</div>`:''}
+      ${p.anniv?`<div class="gwb-tip">📌 这一天，他在微浪发了两个字。</div>`:''}
       <div class="p-bar"><span>↻ —</span><span>💬 —</span><span>♡ ${3+(p.id.charCodeAt(1)%9)}</span></div>
     </div>
   </div>`;
@@ -4414,8 +5188,15 @@ function showAnnivModal(){
     </div>`, {
     title:'同一天',
     actions:[
-      { label:'回看那条微博', onClick:()=>{ closeModal(); go('weibo'); } },
-      { label:'继续整理', cls:'ghost', onClick:closeModal }
+      { label:'查看对应微浪', onClick:()=>{
+          /* 记住当前主页滚动位置，详情返回后恢复 */
+          const sc = document.querySelector('#gwbScroll');
+          S.flags.gwbScrollTop = sc ? sc.scrollTop : 0;
+          S.flags.gwbReturning = true;
+          save();
+          closeModal(); push('idolold');
+      } },
+      { label:'返回主页', cls:'ghost', onClick:closeModal }
     ]
   });
 }
@@ -4429,8 +5210,10 @@ function evidenceView(){
   const w = document.createElement('div');
   w.className = 'app-view';
   const got = EVIDENCE.filter(e=>evGot(e.key));
-  const ready = got.length >= 9;                 // 达到主线上限即可作答
+  /* 只有全部必需证据都整理完、且纪念日反转已触发，才开放最终选择 */
+  const ready = got.length >= EVIDENCE.length && !!S.flags.annivReversed;
   const pending = Object.keys(S.flags).filter(k=>/Done|Seen|Read/.test(k) && S.flags[k]).length;
+  const missing = EVIDENCE.filter(e=>!evGot(e.key));
   w.innerHTML = `
     ${navbar('证据册', {right:homeKey()})}
     <div class="scroll" style="background:#f7f7fa">
@@ -4479,7 +5262,7 @@ function evidenceView(){
         `: `
           <div class="notice" style="margin:0">
             <span class="ni">🔒</span>
-            <span>还不到作决定的时候。回到还没看完的地方继续。</span>
+            <span>还不到作决定的时候。${missing.length?`还有 <b>${missing.length}</b> 条记录没有整理。`:''}回到还没看完的地方继续。</span>
           </div>
           <button class="btn ghost" id="restartBtn" style="margin-top:16px">重新开始</button>
         `}
@@ -4558,8 +5341,17 @@ function boot(){
     }
   }catch(e){}
 
-  /* 旧存档兼容：老版本没有 splash 概念，读到旧档直接进桌面 */
-  if(S.stage > 0 && !S.started){ S.started = true; S.app = 'desktop'; save(); }
+  /* 【minitool】每次冷启动一律从头开始：清掉上次遗留的存档，
+     避免审核/新玩家打开时直接落进半途存档。游戏内的"继续"仍靠同一次会话内的内存状态。 */
+  try{
+    localStorage.removeItem(SAVE_KEY);
+    Object.keys(localStorage)
+      .filter(k=>/xhs|detective|save|demo2024/i.test(k))
+      .forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+  }catch(e){}
+  try{ sessionStorage.clear(); }catch(e){}
+  S = freshState();
+
   if(!S.app) S.app = 'splash';
   render();
 }
